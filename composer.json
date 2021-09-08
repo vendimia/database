@@ -1,0 +1,22 @@
+{
+    "name": "vendimia/database",
+    "description": "ORM library",
+    "license": "GPL-3.0-or-later",
+    "keywords": ["php", "vendimia", "orm"],
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vendimia\\Database\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Oliver Etchebarne",
+            "email": "yo@drmad.org",
+            "homepage": "https://drmad.org",
+            "role": "developer"
+        }
+    ]    
+}
