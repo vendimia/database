@@ -16,10 +16,10 @@ class Query
 
     private TableAliases $table_aliases;
 
-    private $fields = ['*'];
-    private $joins = [];
-    private $limit = null;
-    private $order = '';
+    private array $fields = [];
+    private array $joins = [];
+    private ?string $limit = null;
+    private string $order = '';
 
     public function __construct(
         private string $target_class,
@@ -27,7 +27,8 @@ class Query
     {
 
         $this->table_aliases = new TableAliases(Setup::$connector);
-        $this->table_aliases->addTableAlias($this->target_class::getTableName());
+        $main_table = $this->table_aliases->addTableAlias($this->target_class::getTableName());
+        $this->fields = [$main_table . '.*'];
 
         if ($where) {
             $this->where(...$where);
