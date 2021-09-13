@@ -30,4 +30,13 @@ class Decimal extends FieldAbstract
 
         return is_null($value) ? null : floatval($value);
     }
+
+    public function processDatabaseValue($value)
+    {
+        $result = parent::processDatabaseValue($value);
+
+        if (!is_object($result)) {
+            return floatval($value);
+        }
+    }
 }

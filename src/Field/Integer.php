@@ -17,4 +17,13 @@ class Integer extends FieldAbstract
 
         return is_null($value) ? null : intval($value);
     }
+
+    public function processDatabaseValue($value)
+    {
+        $result = parent::processDatabaseValue($value);
+
+        if (!is_object($result)) {
+            return intval($value);
+        }
+    }
 }
