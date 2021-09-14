@@ -35,7 +35,7 @@ class EntitySet implements Iterator
     }
 
     /**
-     * Creates a query from the constrains, or uses the received Query, and 
+     * Creates a query from the constrains, or uses the received Query, and
      * executes it.
      */
     public function load(): self
@@ -83,6 +83,30 @@ class EntitySet implements Iterator
         return $entity;
     }
 
+    /**
+     * Returns the entire record set as an array.
+     *
+     * If $index_field is null, the array index will be the private key value.
+     * Otherwise it will be that field's value.
+     */
+    public function asArray(
+        string $value_field,
+        string $index_field = null
+    ): array
+    {
+        $return = [];
+        while ($entity = $this->fetch()) {
+            if ($index_field) {
+                $key = $entity->$index_field;
+            } else {
+                $key = $entity->pk();
+            }
+
+            $return[$key] = $entity->$value_field;
+        }
+
+        return $return;
+    }
     /**
      * Adds an Entity to this set.
      */
