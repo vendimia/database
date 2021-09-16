@@ -122,7 +122,7 @@ abstract class FieldAbstract
         if ($class = $this->properties['class_value']) {
             return new $class($value);
         }
-        
+
         return $value;
     }
 

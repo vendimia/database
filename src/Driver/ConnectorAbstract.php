@@ -1,12 +1,12 @@
 <?php
 namespace Vendimia\Database\Driver;
 
-/** 
+/**
  * Common methods for ConnectorInterface implementation
  */
-abstract class ConnectorAbstract 
+abstract class ConnectorAbstract
 {
-    /** 
+    /**
      * Prepares an SQL INSERT statement
      */
     protected function prepareInsert(string $table, array $payload): string
@@ -29,8 +29,8 @@ abstract class ConnectorAbstract
      * Prepares an SQL UPDATE statement
      */
     protected function prepareUpdate(
-        string $table, 
-        array $payload, 
+        string $table,
+        array $payload,
         string $where = null
     ): string
     {

@@ -77,16 +77,16 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             if ($value instanceof DatabaseValue) {
                 return $value->getDatabaseValue($this);
             }
-        } 
+        }
 
         throw new InvalidArgumentException('Can\'t escape a value of type "' . gettype($value) . '".');
-    }    
+    }
 
     public function escapeIdentifier(string $identifier): string
     {
         return $this->escape($identifier, '`');
-    }    
-    
+    }
+
     /**
      * Executes a SQL query
      */
@@ -108,7 +108,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         }
 
         return $row;
-    }    
+    }
 
     /**
      * Executes a SQL INSERT. Returns the primary key value.
@@ -128,8 +128,8 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
      * Executes a SQL UPDATE. Returns the number of records affected.
      */
     public function update(
-        string $table, 
-        array $payload, 
+        string $table,
+        array $payload,
         string $where = null
     ): int
     {

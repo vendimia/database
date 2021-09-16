@@ -8,12 +8,12 @@ interface FieldInterface
      * in the database.
      */
     public function getFieldName(): ?string;
-    
+
     /**
      * Returns this field name
      */
     public function getName(): string;
-    
+
     /**
      * Sets this field entity owner
      */
@@ -23,7 +23,7 @@ interface FieldInterface
      * Returns an array with [table, field_name]
      */
     public function getFullFieldName(): array;
-    
+
     /**
      * Process and validates a PHP value, and returns a database-aware value.
      */

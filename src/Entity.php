@@ -378,7 +378,7 @@ abstract class Entity
         $this->fromDatabase($query->getResult()->fetch());
     }
 
-    /** 
+    /**
      * Returns this entity as an array
      */
     public function asArray(): array
@@ -390,7 +390,7 @@ abstract class Entity
         );
 
         // Filtramos las propiedades estáticas
-        $ref_properties = array_filter($ref_properties, 
+        $ref_properties = array_filter($ref_properties,
             fn($p) => !$p->isStatic()
         );
 
