@@ -13,8 +13,8 @@ class OneToMany extends FieldAbstract
         'entity' => null,
 
         // Field in target entity linked to this Entity primary key.
-        // Default $entity->getName()
-        'fk_field' => null,
+        // Default $target_entity->getName()
+        'foreign_key' => null,
 
     ];
 
@@ -29,7 +29,7 @@ class OneToMany extends FieldAbstract
             throw new InvalidArgumentException("Field '{$this->name}' of type 'OneToMany' requires a target Entity");
         }
 
-        $this->properties['fk_field'] ??= ($this->entity_class)::getName();
+        $this->properties['foreign_key'] ??= ($this->entity_class)::getName();
     }
 
     public function getFieldName(): ?string
@@ -51,10 +51,10 @@ class OneToMany extends FieldAbstract
             $this->properties['entity'],
             constrains: [
                 /*[
-                    ($this->properties['entity'])::F($this->properties['fk_field']),
+                    ($this->properties['entity'])::F($this->properties['foreign_key']),
                     $this->entity
                 ]*/
-                $this->properties['fk_field'] => $this->entity->pk()
+                $this->properties['foreign_key'] => $this->entity->pk()
             ]
         );
     }
