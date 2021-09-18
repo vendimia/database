@@ -4,7 +4,8 @@
     "license": "GPL-3.0-or-later",
     "keywords": ["php", "vendimia", "orm"],
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.1",
+        "vendimia/data-container": "*"
     },
     "autoload": {
         "psr-4": {
