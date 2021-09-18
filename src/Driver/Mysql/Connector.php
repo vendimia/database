@@ -6,38 +6,16 @@ use Vendimia\Database\FieldType;
 use Vendimia\Database\Driver\Result;
 use Vendimia\Database\Driver\ConnectorInterface;
 use Vendimia\Database\Driver\ConnectorAbstract;
+use Vendimia\Database\Migration\FieldDef;
+use Vendimia\Database\DatabaseException;
 
 use InvalidArgumentException;
+use Exception;
 use RuntimeException;
 use MySQLi;
 
 class Connector extends ConnectorAbstract implements ConnectorInterface
 {
-    const FIELDS = [
-        FieldType::Bool => 'integer',
-        FieldType::Byte => 'tinyint',
-        FieldType::SmallInt => 'smallint',
-        FieldType::Integer => 'int',
-        FieldType::BigInt => 'bigint',
-
-        FieldType::Float => 'float',
-        FieldType::Double => 'double',
-        FieldType::Decimal => 'decimal',
-
-        FieldType::Char => 'varchar',
-        FieldType::FixChar => 'char',
-        FieldType::Text => 'text',
-        FieldType::Blob => 'blob',
-
-        FieldType::Date => 'date',
-        FieldType::Time => 'time',
-        FieldType::DateTime => 'datetime',
-
-        FieldType::JSON => 'json',
-
-        FieldType::ForeignKey => 'integer',
-    ];
-
     public function __construct(...$args)
     {
         $this->db = new MySQLi;
@@ -53,12 +31,48 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         }
     }
 
+    public function getName(): string
+    {
+        return 'mysql';
+    }
+
+    public function getNativeType(FieldType $type): string
+    {
+        return match($type) {
+            FieldType::AutoIncrement => 'INTEGER',
+
+            FieldType::Bool => 'TINYINT',
+            FieldType::Byte => 'TINYINT',
+            FieldType::SmallInt => 'SMALLINT',
+            FieldType::Integer => 'INTEGER',
+            FieldType::BigInt => 'BIGINT',
+
+            FieldType::Float => 'FLOAT',
+            FieldType::Double => 'DOUBLE',
+            FieldType::Decimal => 'DECIMAL',
+
+            FieldType::Char => 'VARCHAR',
+            FieldType::FixChar => 'CHAR',
+            FieldType::Text => 'TEXT',
+            FieldType::Blob => 'BLOB',
+
+            FieldType::Date => 'DATE',
+            FieldType::Time => 'TIME',
+            FieldType::DateTime => 'DATETIME',
+
+            FieldType::JSON => 'JSON',
+        };
+    }
+
     public function escape(mixed $value, string $quote_char = '\''): string|array
     {
         // Ya que los numeros /también/ son strings, procesamos is_numeric
         // primero
         if (is_array($value)) {
-            return array_map([$this, 'escape'], $value);
+            return array_map(
+                fn($value) => $this->escape($value, $quote_char),
+                $value
+            );
         } elseif (is_numeric($value)) {
             // Los números no requieren quotes
             return $value;

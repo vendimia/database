@@ -11,37 +11,46 @@ use SQLite3;
 use InvalidArgumentException;
 use RuntimeException;
 
-class Connector implements ConnectorInterface
+class Connector extends ConnectorAbstract implements ConnectorInterface
 {
-    const FIELDS = [
-        FieldType::Bool => 'integer',
-        FieldType::Byte => 'integer',
-        FieldType::SmallInt => 'integer',
-        FieldType::Integer => 'integer',
-        FieldType::BigInt => 'integer',
-
-        FieldType::Float => 'real',
-        FieldType::Double => 'real',
-        FieldType::Decimal => 'numeric',
-
-        FieldType::Char => 'text',
-        FieldType::FixChar => 'text',
-        FieldType::Text => 'text',
-        FieldType::Blob => 'blob',
-
-        FieldType::Date => 'text',
-        FieldType::Time => 'text',
-        FieldType::DateTime => 'text',
-
-        FieldType::JSON => 'text',
-
-        FieldType::ForeignKey => 'integer',
-    ];
-
     public function __construct(...$args)
     {
         $this->db = new SQLite3(...$args);
         $this->db->enableExceptions(true);
+    }
+
+    public function getName(): string    {
+        return 'sqlite';
+    }
+
+    public function getNativeType(FieldType $type): string
+    {
+        return match($type) {
+            FieldType::AutoIncrement => 'INTEGER',
+
+            FieldType::Bool => 'INTEGER',
+            FieldType::Byte => 'INTEGER',
+            FieldType::SmallInt => 'INTEGER',
+            FieldType::Integer => 'INTEGER',
+            FieldType::BigInt => 'INTEGER',
+
+            FieldType::Float => 'REAL',
+            FieldType::Double => 'REAL',
+            FieldType::Decimal => 'NUMERIC',
+
+            FieldType::Char => 'TEXT',
+            FieldType::FixChar => 'TEXT',
+            FieldType::Text => 'TEXT',
+            FieldType::Blob => 'BLOB',
+
+            FieldType::Date => 'TEXT',
+            FieldType::Time => 'TEXT',
+            FieldType::DateTime => 'TEXT',
+
+            FieldType::JSON => 'TEXT',
+
+            FieldType::ForeignKey => 'INTEGER',
+        };
     }
 
     public function escape(mixed $value, string $quote_char = '\''): string|array

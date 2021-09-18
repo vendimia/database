@@ -4,49 +4,36 @@ namespace Vendimia\Database;
 /**
  * Vendimia database field types
  */
-class FieldType
+enum FieldType
 {
-    // Integers
-    const Bool = 1;
-    const Boolean = 1;
+    case AutoIncrement;
 
-    const Byte = 2;
-    const SmallInt = 3;
-    const Integer = 4;
-    const BigInt = 5;
+    // Integers
+    case Bool;
+    case Byte;
+    case SmallInt;
+    case Integer;
+    case BigInt;
 
     // Decimals
-    const Float = 6;
-    const Double = 7;
-    const Decimal = 8;
+    case Float;
+    case Double;
+    case Decimal;
 
     // Strings
-    const Char = 9;
-    const FixChar = 10;
-    const Text = 11;
-    const Blob = 12;
+    case Char;
+    case FixChar;
+    case Text;
+    case Blob;
 
     // Date/Time
-    const Date = 13;
-    const Time = 14;
-    const DateTime = 15;
+    case Date;
+    case Time;
+    case DateTime;
 
     // ForeignKey
-    const ForeignKey = 16;
+    case ForeignKey;
 
     // JSON
-    const JSON = 17;
-
-
-    const NEED_LENGTH = [
-        self::Char, self::FixChar, self::Decimal
-    ];
-
-    /**
-     * Returns if a fields needs length
-     */
-    static public function needLength($field)
-    {
-        return in_array($field, self::NEED_LENGTH);
-    }
+    case JSON;
 }
