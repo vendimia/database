@@ -1,6 +1,9 @@
 <?php
 namespace Vendimia\Database\Driver;
 
+/**
+ * Query result abstraction
+ */
 class Result
 {
     public function __construct(
