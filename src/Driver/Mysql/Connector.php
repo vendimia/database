@@ -153,4 +153,52 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
         return $this->db->affected_rows;
     }
+
+    /**
+     * Varchar requieres a length
+     */
+    public function buildCharFieldDefName(FieldDef $fielddef): array
+    {
+        if (is_null($fielddef->length)) {
+            throw new InvalidArgumentException("'Char' field requires a length");
+        }
+
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            $this->getNativeType($fielddef->type) . "({$fielddef->length})"
+        ];
+    }
+
+    /**
+     * FixChar requieres a length
+     */
+    public function buildFixCharFieldDefName(FieldDef $fielddef): array
+    {
+        if (is_null($fielddef->length)) {
+            throw new InvalidArgumentException("'FixChar' field requires a length");
+        }
+
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            $this->getNativeType($fielddef->type) . "({$fielddef->length})"
+        ];
+    }
+
+    /**
+     * AutoIncrement is a INTEGER AUTO_INCREMENT
+     */
+    public function buildAutoIncrementFieldDefName(
+        string $name,
+        FieldType $type,
+        ?int $length = null,
+        ?int $decimal = null,
+        bool $null = true,
+        $default = null,
+    )
+    {
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            "INTEGER AUTO_INCREMENT"
+        ];
+    }
 }
