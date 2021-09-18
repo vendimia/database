@@ -4,7 +4,7 @@ namespace Vendimia\Database\Field;
 use Vendimia\Database\Entity;
 use InvalidArgumentException;
 
-abstract class FieldAbstract
+abstract class FieldAbstract implements FieldInterface
 {
     protected ?Entity $entity = null;
     protected $value;
@@ -135,7 +135,7 @@ abstract class FieldAbstract
         return false;
     }
 
-    public function postProc()
+    public function postProc(): void
     {
 
     }

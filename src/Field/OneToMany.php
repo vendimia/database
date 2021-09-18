@@ -4,6 +4,7 @@ namespace Vendimia\Database\Field;
 use Attribute;
 use InvalidArgumentException;
 use Vendimia\Database\EntitySet;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class OneToMany extends FieldAbstract
@@ -32,6 +33,11 @@ class OneToMany extends FieldAbstract
         $this->properties['foreign_key'] ??= ($this->entity_class)::getName();
     }
 
+    public function getFieldType(): ?FieldType
+    {
+        return null;
+    }
+
     public function getFieldName(): ?string
     {
         return null;
@@ -45,7 +51,7 @@ class OneToMany extends FieldAbstract
     /**
      * Creates an EntitySet in the entity property
      */
-    public function postProc()
+    public function postProc(): void
     {
         $this->entity->{$this->name} = new EntitySet(
             $this->properties['entity'],

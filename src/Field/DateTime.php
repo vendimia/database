@@ -3,10 +3,16 @@ namespace Vendimia\Database\Field;
 
 use Attribute;
 use InvalidArgumentException;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class DateTime extends FieldAbstract
 {
+    public function getFieldType(): FieldType
+    {
+        return FieldType::DATETIME;
+    }
+
     public function processPHPValue($value)
     {
         $value = parent::processPHPValue($value);

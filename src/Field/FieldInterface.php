@@ -1,8 +1,16 @@
 <?php
 namespace Vendimia\Database\Field;
 
+use Vendimia\Database\FieldType;
+use Vendimia\Database\Entity;
+
 interface FieldInterface
 {
+    /**
+     * Returns the field type, used for SQL field definition.
+     */
+    public function getFieldType(): ?FieldType;
+
     /**
      * Returns this database field name. Null disables this Field to have one
      * in the database.
@@ -17,8 +25,8 @@ interface FieldInterface
     /**
      * Sets this field entity owner
      */
+    public function setEntity(Entity $entity): self;
 
-     public function setEntity(Entity $entity): self;
     /**
      * Returns an array with [table, field_name]
      */

@@ -2,6 +2,7 @@
 namespace Vendimia\Database\Field;
 
 use Attribute;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ManyToOne extends FieldAbstract
@@ -15,6 +16,11 @@ class ManyToOne extends FieldAbstract
         'fk_field' => 'id',
 
     ];
+
+    public function getFieldType(): FieldType
+    {
+        return FieldType::INTEGER;
+    }
 
     public function __construct(...$args)
     {
@@ -41,7 +47,7 @@ class ManyToOne extends FieldAbstract
     /**
      * Uses the pre-fetched field as ID value to create an entity
      */
-    public function postProc()
+    public function postProc(): void
     {
         $entity = $this->properties['entity'];
         $this->entity->{$this->name} = $entity::get(

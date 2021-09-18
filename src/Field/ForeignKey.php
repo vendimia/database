@@ -3,10 +3,16 @@ namespace Vendimia\Database\Field;
 
 use Attribute;
 use InvalidArgumentException;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ForeignKey extends FieldAbstract
 {
+    public function getFieldType(): FieldType
+    {
+        return FieldType::FOREIGNKEY;
+    }
+
     protected $extra_properties = [
         // Target Entity
         'entity' => null,

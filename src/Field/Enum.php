@@ -3,10 +3,16 @@ namespace Vendimia\Database\Field;
 
 use Attribute;
 use InvalidArgumentException;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Enum extends FieldAbstract
 {
+    public function getFieldType(): FieldType
+    {
+        return FieldType::ENUM;
+    }
+
     public function __construct(...$args)
     {
         parent::__construct(...$args);

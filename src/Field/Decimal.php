@@ -3,10 +3,16 @@ namespace Vendimia\Database\Field;
 
 use Attribute;
 use InvalidArgumentException;
+use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Decimal extends FieldAbstract
 {
+    public function getFieldType(): FieldType
+    {
+        return FieldType::DECIMAL;
+    }
+
     public function __construct(...$args)
     {
         parent::__construct(...$args);
