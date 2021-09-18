@@ -96,7 +96,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         throw new InvalidArgumentException('Can\'t escape a value of type "' . gettype($value) . '".');
     }
 
-    public function escapeIdentifier(string $identifier): string
+    public function escapeIdentifier(string|array $identifier): string|array
     {
         return $this->escape($identifier, '`');
     }

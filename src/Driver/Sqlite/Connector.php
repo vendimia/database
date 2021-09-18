@@ -58,7 +58,10 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         // Ya que los numeros /también/ son strings, procesamos is_numeric
         // primero
         if (is_array($value)) {
-            return array_map([$this, 'escape'], $value);
+            return array_map(
+                fn($value) => $this->escape($value, $quote_char),
+                $value
+            );
         } elseif (is_numeric($value)) {
             // Los números no requieren quotes
             return $value;
@@ -77,12 +80,12 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             if ($value instanceof DatabaseValue) {
                 return $value->getDatabaseValue($this);
             }
-        } 
+        }
 
         throw new InvalidArgumentException('Can\'t escape a value of type "' . gettype($value) . '".');
     }
 
-    public function escapeIdentifier(string $identifier): string
+    public function escapeIdentifier(string|array $identifier): string|array
     {
         return $this->escape($identifier, '"');
     }

@@ -1,19 +1,30 @@
 <?php
 namespace Vendimia\Database\Driver;
 
+use Vendimia\Database\Migration\FieldDef;
+use Vendimia\Database\FieldType;
+
 interface ConnectorInterface
 {
-    public function __construct($args);
+    /**
+     * Returns the driver's name.
+     */
+    public function getName(): string;
 
     /**
-     * Converts and escape a PHP value, adding quotes if necessary.
+     * Returns this driver's field name for a Vendima field type
+     */
+    public function getNativeType(FieldType $type): string;
+
+    /**
+     * Converts and escape one o more PHP values, adding quotes if necessary.
      */
     public function escape(mixed $value, string $quote_char): string|array;
 
     /**
-     * Escapes an identifier, like a table name
+     * Escapes one or more identifiers, like a table name
      */
-    public function escapeIdentifier(string $identifier): string;
+    public function escapeIdentifier(string|array $identifier): string|array;
 
     /**
      * Executes a SQL query
