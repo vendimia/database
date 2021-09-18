@@ -6,6 +6,7 @@ use Vendimia\Database\FieldType;
 use Vendimia\Database\Driver\Result;
 use Vendimia\Database\Driver\ConnectorInterface;
 use Vendimia\Database\Driver\ConnectorAbstract;
+use Vendimia\Database\DatabaseException;
 
 use SQLite3;
 use InvalidArgumentException;
@@ -19,7 +20,8 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         $this->db->enableExceptions(true);
     }
 
-    public function getName(): string    {
+    public function getName(): string
+    {
         return 'sqlite';
     }
 
@@ -95,9 +97,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
      */
     public function execute(string $query): Result
     {
-        $result = $this->db->query($query);
+        try {
+            $result = $this->db->query($query);
+        } catch (Exception $e) {
+            throw new DatabaseException($this->db->lastErrorMsg(), previous: $e);
+        }
+
         if ($result === false) {
-            throw new RuntimeException($this->db->lastErrorMsg());
+            throw new DatabaseException($this->db->lastErrorMsg());
         }
         return new Result($this, $result);
     }

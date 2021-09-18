@@ -106,9 +106,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
      */
     public function execute(string $query): Result
     {
-        $result = $this->db->query($query);
+        try {
+            $result = $this->db->query($query);
+        } catch (Exception $e) {
+            throw new DatabaseException($this->db->error, previous: $e);
+        }
+
         if ($result === false) {
-            throw new RuntimeException($this->db->error);
+            throw new DatabaseException($this->db->error);
         }
         return new Result($this, $result);
     }
