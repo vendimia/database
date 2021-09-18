@@ -35,4 +35,18 @@ interface ConnectorInterface
      */
     public function update(string $table, array $payload, string $where = null): int;
 
+    /**
+     * Builds a database field definition
+     */
+    public function buildFieldDef(FieldDef $fielddef): string;
+
+    /**
+     * Builds a CREATE INDEX SQL statement
+     */
+    public function buildIndexDef(
+        string $table_name,
+        array $field_names,
+        bool $unique = false,
+    ): string;
+
 }
