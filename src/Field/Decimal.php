@@ -21,7 +21,7 @@ class Decimal extends FieldAbstract
             throw new InvalidArgumentException("Field '{$this->name}' of type 'Decimal' requires a length (precision)");
         }
 
-        if (!$this->properties['decimals']) {
+        if (!$this->properties['decimal']) {
             throw new InvalidArgumentException("Field '{$this->name}' of type 'Decimal' requires the decimal count (scale)");
         }
     }
