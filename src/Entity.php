@@ -136,7 +136,7 @@ abstract class Entity
     /**
      * Return all the fields in this entity
      */
-    private static function getFieldList()
+    public static function getFieldList()
     {
         $fields = [];
 
