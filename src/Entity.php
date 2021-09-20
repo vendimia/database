@@ -34,6 +34,26 @@ abstract class Entity
     }
 
     /**
+     * Helper method for removing multi-line asterisks and /
+     */
+    protected static function parseDocComment($doc_comment): string
+    {
+        $result = '';
+        $lines = explode("\n", $doc_comment);
+
+        // Si solo hay una línea, removemos los caracteres de ámbos lados
+        if (count($lines) == 1) {
+            return trim($doc_comment, '/* ');
+        }
+
+        foreach ($lines as $line) {
+            $result .= ltrim($line, '/* ') . "\n";
+        }
+
+        return trim($result);
+    }
+
+    /**
      * Returns this entity name, i.e. the last component in the FQCN
      */
     public static function getName()
@@ -128,6 +148,7 @@ abstract class Entity
 
         return new $class(
             name: $field,
+            comment: static::parseDocComment($ref_property->getDocComment()),
             entity_class: static::class,
             args: $args
         );
@@ -158,6 +179,7 @@ abstract class Entity
 
             $fields[$rp->name] = new $class(
                 name: $rp->name,
+                comment: static::parseDocComment($rp->getDocComment()),
                 entity_class: static::class,
                 args: $attr->getArguments(),
             );

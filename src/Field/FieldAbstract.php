@@ -14,7 +14,7 @@ abstract class FieldAbstract implements FieldInterface
         'length' => null,
 
         // Decimal places for the float, required for some values
-        'decimals' => null,
+        'decimal' => null,
 
         // Value can be null?
         'null' => false,
@@ -32,7 +32,8 @@ abstract class FieldAbstract implements FieldInterface
     public function __construct(
         protected $name,
         protected $entity_class,
-        array $args
+        array $args,
+        protected $comment = '',
     )
     {
 
@@ -74,6 +75,22 @@ abstract class FieldAbstract implements FieldInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the DocBlock of the property
+     */
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Returns a property
+     */
+    public function getProperty($property)
+    {
+        return $this->properties[$property];
     }
 
     /**
