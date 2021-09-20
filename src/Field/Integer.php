@@ -10,7 +10,7 @@ class Integer extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::INTEGER;
+        return FieldType::Integer;
     }
 
     public function processPHPValue($value)

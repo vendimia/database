@@ -10,7 +10,7 @@ class Char extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::CHAR;
+        return FieldType::Char;
     }
 
     public function __construct(...$args)

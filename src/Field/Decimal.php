@@ -10,7 +10,7 @@ class Decimal extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::DECIMAL;
+        return FieldType::Decimal;
     }
 
     public function __construct(...$args)

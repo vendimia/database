@@ -10,7 +10,7 @@ class Enum extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::ENUM;
+        return FieldType::Enum;
     }
 
     public function __construct(...$args)

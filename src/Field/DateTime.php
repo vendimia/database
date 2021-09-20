@@ -10,7 +10,7 @@ class DateTime extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::DATETIME;
+        return FieldType::DateTime;
     }
 
     public function processPHPValue($value)

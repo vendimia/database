@@ -10,7 +10,7 @@ class Text extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::TEXT;
+        return FieldType::Text;
     }
 
 }

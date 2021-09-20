@@ -10,7 +10,7 @@ class ForeignKey extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::FOREIGNKEY;
+        return FieldType::ForeignKey;
     }
 
     protected $extra_properties = [
