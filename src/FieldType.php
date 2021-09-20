@@ -36,4 +36,7 @@ enum FieldType
 
     // JSON
     case JSON;
+
+    // Enum
+    case Enum;
 }

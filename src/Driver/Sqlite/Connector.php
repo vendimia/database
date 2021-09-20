@@ -52,6 +52,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             FieldType::JSON => 'TEXT',
 
             FieldType::ForeignKey => 'INTEGER',
+            FieldType::Enum => 'TEXT',
         };
     }
 

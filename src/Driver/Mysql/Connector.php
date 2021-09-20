@@ -61,6 +61,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             FieldType::DateTime => 'DATETIME',
 
             FieldType::JSON => 'JSON',
+            FieldType::Enum => 'ENUM',
         };
     }
 
