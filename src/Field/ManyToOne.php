@@ -1,8 +1,9 @@
 <?php
 namespace Vendimia\Database\Field;
 
-use Attribute;
 use Vendimia\Database\FieldType;
+use Attribute;
+use InvalidArgumentException;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ManyToOne extends FieldAbstract
@@ -19,18 +20,16 @@ class ManyToOne extends FieldAbstract
 
     public function getFieldType(): FieldType
     {
-        return FieldType::INTEGER;
+        return FieldType::Integer;
     }
 
     public function __construct(...$args)
     {
         parent::__construct(...$args);
 
-        // La clase objetivo es el 1er parámetro, que está en 'length'.
-        // Cambiamos el nombre del campo
-        $this->properties['entity'] ??= $this->properties['length'] ?? null;
         if (!$this->properties['entity']) {
-            throw new InvalidArgumentException("Field '{$this->name}' of type 'OneToMany' requires a target Entity");
+            throw new InvalidArgumentException(
+                "{$this->entity_class}: Field '{$this->name}' of type 'ManyToOne' requires a target Entity");
         }
     }
 

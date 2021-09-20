@@ -46,12 +46,21 @@ abstract class FieldAbstract implements FieldInterface
         }
 
         // Índices 0 y 1 tienen significado especial
+
         if (isset($args[0])) {
-            $this->properties['length'] = array_shift($args);
+            // El índice 0 puede tener la longitud del campo, o la clase destino
+            // de ciertas relaciones foráneas
+            $property = array_shift($args);
+            if (is_numeric($property)) {
+                $this->properties['length'] = intval($property);
+            } else {
+                $this->properties['entity'] = $property;
+            }
         }
+
         // Si sigue insistiendo un índice 0, son los decimales
         if (isset($args[0])) {
-            $this->properties['decimals'] = array_shift($args);
+            $this->properties['decimal'] = intval(array_shift($args));
         }
 
         $this->properties = array_merge(
