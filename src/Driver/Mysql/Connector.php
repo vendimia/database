@@ -62,6 +62,8 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
             FieldType::JSON => 'JSON',
             FieldType::Enum => 'ENUM',
+
+            FieldType::ForeignKey => 'INTEGER',
         };
     }
 
@@ -191,16 +193,40 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     }
 
     /**
+     * Enum requieres a 'values' property
+     */
+    public function buildEnumFieldDefName(FieldDef $fielddef): array
+    {
+        if (!$fielddef->values) {
+            throw new InvalidArgumentException("'Enum' field requires a 'values' property with valid values");
+        }
+
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            $this->getNativeType($fielddef->type) . '(' . join(',', $this->escape($fielddef->values)) . ')',
+        ];
+    }
+
+    /**
+     * Decimal has a special format, in any driver
+     */
+    public function buildDecimalFieldDefName(FieldDef $fielddef): array
+    {
+        if (!$fielddef->length || !$fielddef->decimal) {
+            throw new InvalidArgumentException("'Decimal' field requires a 'length' and a 'decimal' properties");
+        }
+
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            $this->getNativeType($fielddef->type) . "({$fielddef->length},{$fielddef->decimal})",
+        ];
+
+    }
+
+    /**
      * AutoIncrement is a INTEGER AUTO_INCREMENT
      */
-    public function buildAutoIncrementFieldDefName(
-        string $name,
-        FieldType $type,
-        ?int $length = null,
-        ?int $decimal = null,
-        bool $null = true,
-        $default = null,
-    )
+    public function buildAutoIncrementFieldDefName(FieldDef $fielddef)
     {
         return [
             $this->escapeIdentifier($fielddef->name),
