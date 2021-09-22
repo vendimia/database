@@ -14,8 +14,7 @@ class ManyToOne extends FieldAbstract
 
         // Field in target entity linked to this Entity primary key.
         // Default $entity->getName()
-        'fk_field' => 'id',
-
+        'foreign_key' => 'id',
     ];
 
     public function getFieldType(): FieldType
@@ -35,7 +34,7 @@ class ManyToOne extends FieldAbstract
 
     public function getFieldName(): string
     {
-        return $this->name . '_id';
+        return $this->properties['database_field'] ?? $this->name . '_id';
     }
 
     public function requirePostProc(): bool
@@ -50,7 +49,7 @@ class ManyToOne extends FieldAbstract
     {
         $entity = $this->properties['entity'];
         $this->entity->{$this->name} = $entity::get(
-            ...[$entity = $this->properties['fk_field'] => $this->entity->{$this->name}]
+            ...[$this->properties['foreign_key'] => $this->entity->{$this->name}]
         );
     }
 }
