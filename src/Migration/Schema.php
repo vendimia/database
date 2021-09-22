@@ -81,12 +81,12 @@ class Schema
     }
 
     /**
-     * Alias de add
+     * Alias of self::field()
      */
-    /*public function field(...$args)
+    public function addField(...$args)
     {
-        $this->add(...$args);
-    }*/
+        $this->field(...$args);
+    }
 
     /**
      * Returns this schema table name
@@ -98,12 +98,11 @@ class Schema
 
 
     /**
-     * Returns $this::$fields joined by commas, used in CREATE TABL
+     * Returns $this::$fields joined by commas, used in CREATE TABLE
      */
-    public function getFieldsForCreate()
+    public function getFieldsForCreate(): string
     {
         $return = $this->fields;
-
 
         if ($this->primary_keys) {
             // La definición de PRIMARY KEY es la misma en sqlite, mysql y pqsql
@@ -112,6 +111,14 @@ class Schema
             . ')';
         }
         return join(',', $return);
+    }
+
+    /**
+     * Retuns the fields list, used for update
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     /**

@@ -5,7 +5,6 @@ use Vendimia\Database\Driver\ConnectorInterface;
 use Vendimia\Database\Migration\Schema;
 use Attribute;
 
-
 /**
  * Creates a new table and indexes
  */
