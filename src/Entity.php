@@ -34,9 +34,11 @@ abstract class Entity
     }
 
     /**
-     * Helper method for removing multi-line asterisks and /
+     * Helper method for removing multi-line asterisks and forward slashes.
+     *
+     * FIXME: This shouldn't be here.
      */
-    protected static function parseDocComment($doc_comment): string
+    public static function extractTextFromDocComment($doc_comment): string
     {
         $result = '';
         $lines = explode("\n", $doc_comment);
@@ -47,10 +49,32 @@ abstract class Entity
         }
 
         foreach ($lines as $line) {
-            $result .= ltrim($line, '/* ') . "\n";
+            $pline = trim($line);
+
+            // Si la línea empieza con un '/**', lo eliminamos
+            if (str_starts_with($pline, '/**')) {
+                $pline = substr($pline, 3);
+            }
+
+            // Si la línea acaba con un */, lo eliminamos
+            if (str_ends_with($pline, '*/')) {
+                $pline = substr($pline, 1, -2);
+            }
+
+            // Si la línea empieza con un '*', lo eliminamos
+            if (str_starts_with($pline, '*')) {
+                $pline = substr($pline, 1);
+            }
+
+            // Líneas vacías añaden un nuevo párrafo.
+            if ($pline == "") {
+                $result .= "\n\n";
+            } else {
+                $result .= $pline;
+            }
         }
 
-        return trim($result);
+        return trim($result, " \n");
     }
 
     /**
@@ -148,7 +172,7 @@ abstract class Entity
 
         return new $class(
             name: $field,
-            comment: static::parseDocComment($ref_property->getDocComment()),
+            comment: static::extractTextFromDocComment($ref_property->getDocComment()),
             entity_class: static::class,
             args: $args
         );
@@ -179,7 +203,7 @@ abstract class Entity
 
             $fields[$rp->name] = new $class(
                 name: $rp->name,
-                comment: static::parseDocComment($rp->getDocComment()),
+                comment: static::extractTextFromDocComment($rp->getDocComment()),
                 entity_class: static::class,
                 args: $attr->getArguments(),
             );
