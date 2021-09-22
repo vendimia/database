@@ -41,7 +41,16 @@ class Migrator
             $table_name = $rm->name;
 
             // Solo debe haber una acción.
+            $action_name = strtolower(
+                array_slice(explode('\\', $attrs[0]->getName()), -1)[0]
+            );
             $action = $attrs[0]->newInstance();
+
+            // Ejecutamos el hook 'pre'
+            $pre_method = $table_name . '__pre_' . $action_name;
+            if (method_exists($migration, $pre_method)) {
+                $migration->$pre_method();
+            }
 
             // Creamos un schema, y ejecutamos el método
             $schema = new Schema($table_name);
@@ -49,6 +58,13 @@ class Migrator
 
             // Ejecutamos la acción
             $action->perform($this->connection, $schema);
+
+            // Y ejecutamos el hook 'pre'
+            $pre_method = $table_name . '__post_' . $action_name;
+            if (method_exists($migration, $pre_method)) {
+                $migration->$pre_method();
+            }
+
         }
 
     }
