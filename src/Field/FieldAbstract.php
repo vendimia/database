@@ -27,6 +27,9 @@ abstract class FieldAbstract implements FieldInterface
 
         // Valid possible values for this field. Used when creating Enums
         'valid_values' => [],
+
+        // Database field for this entity. Default is this entity name.
+        'database_field' => null,
     ];
 
     public function __construct(
@@ -75,7 +78,7 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function getFieldName(): ?string
     {
-        return $this->name;
+        return $this->properties['database_field'] ?? $this->name;
     }
 
     /**
