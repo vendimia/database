@@ -14,12 +14,12 @@ final class SchemaTest extends TestCase
 
         if (Setup::$connector->getName() == 'sqlite') {
             $this->assertEquals(
-                '"id" INTEGER NULL',
+                '"id" INTEGER NOT NULL',
                 $schema->getFieldsForCreate(),
             );
         } elseif (Setup::$connector->getName() == 'mysql') {
             $this->assertEquals(
-                '`id` INTEGER NULL',
+                '`id` INTEGER NOT NULL',
                 $schema->getFieldsForCreate(),
             );
         }
@@ -33,12 +33,12 @@ final class SchemaTest extends TestCase
 
         if (Setup::$connector->getName() == 'sqlite') {
             $this->assertEquals(
-                '"id" INTEGER NULL,"name" TEXT NULL DEFAULT \'Oliver\'',
+                '"id" INTEGER NOT NULL,"name" TEXT NOT NULL DEFAULT \'Oliver\'',
                 $schema->getFieldsForCreate(),
             );
         } elseif (Setup::$connector->getName() == 'mysql') {
             $this->assertEquals(
-                '`id` INTEGER NULL,`name` VARCHAR(20) NULL DEFAULT \'Oliver\'',
+                '`id` INTEGER NOT NULL,`name` VARCHAR(20) NOT NULL DEFAULT \'Oliver\'',
                 $schema->getFieldsForCreate(),
             );
         }
@@ -53,9 +53,9 @@ final class SchemaTest extends TestCase
 
         $expected = match (Setup::$connector->getName()) {
             'sqlite' =>
-                '"id" INTEGER NULL,"name" TEXT NULL DEFAULT \'Oliver\',PRIMARY KEY("id")',
+                '"id" INTEGER NOT NULL,"name" TEXT NOT NULL DEFAULT \'Oliver\',PRIMARY KEY("id")',
             'mysql' =>
-                '`id` INTEGER NULL,`name` VARCHAR(20) NULL DEFAULT \'Oliver\',PRIMARY KEY(`id`)',
+                '`id` INTEGER NOT NULL,`name` VARCHAR(20) NOT NULL DEFAULT \'Oliver\',PRIMARY KEY(`id`)',
         };
 
         $this->assertEquals(
