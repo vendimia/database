@@ -85,7 +85,39 @@ final class SchemaTest extends TestCase
             $expected,
             $schema->getIndexes(),
         );
+    }
 
+    public function testCreateEnum()
+    {
+        $schema = new Schema('test_table');
+        $schema->field('enum', FieldType::Enum, values: ['value-1','value-2','value-3']);
+
+        $expected = match (Setup::$connector->getName()) {
+            'sqlite' => "\"enum\" TEXT CHECK(\"enum\" IN ('value-1','value-2','value-3')) NOT NULL",
+            'mysql' => "`enum` ENUM('value-1','value-2','value-3') NOT NULL",
+        };
+
+        $this->assertEquals(
+            $expected,
+            $schema->getFieldsForCreate(),
+        );
+
+    }
+
+    public function testCreateDecimal()
+    {
+        $schema = new Schema('test_table');
+        $schema->field('decimal', FieldType::Decimal, length: 8, decimal: 2);
+
+        $expected = match (Setup::$connector->getName()) {
+            'sqlite' => "\"decimal\" NUMERIC NOT NULL",
+            'mysql' => "`decimal` DECIMAL(8,2) NOT NULL",
+        };
+
+        $this->assertEquals(
+            $expected,
+            $schema->getFieldsForCreate(),
+        );
     }
 
 }
