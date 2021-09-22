@@ -18,7 +18,7 @@ class Enum extends FieldAbstract
         parent::__construct(...$args);
 
         if (!$this->properties['valid_values']) {
-            throw new InvalidArgumentException("Field '{$this->name}' of type 'Enum' requires a 'valid_value' list");
+            throw new InvalidArgumentException("Field '{$this->name}' of type 'Enum' requires a 'valid_values' list");
         }
     }
 }
