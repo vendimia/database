@@ -3,6 +3,7 @@ namespace Vendimia\Database\Driver;
 
 use Vendimia\Database\FieldType;
 use Vendimia\Database\Migration\FieldDef;
+use InvalidArgumentException;
 
 /**
  * Common methods for ConnectorInterface implementation
