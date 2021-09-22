@@ -29,9 +29,8 @@ class Schema
         FieldType $type,
         ?int $length = null,
         ?int $decimal = null,
-        bool $primary_key = false,
-        bool $auto_increment = false,
-        bool $null = true,
+        ?array $values = null,
+        bool $null = false,
         $default = null,
     )
     {
@@ -40,6 +39,7 @@ class Schema
             type: $type,
             length: $length,
             decimal: $decimal,
+            values: $values,
             null: $null,
             default: $default,
         );
