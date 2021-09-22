@@ -6,6 +6,7 @@ use Vendimia\Database\FieldType;
 use Vendimia\Database\Driver\Result;
 use Vendimia\Database\Driver\ConnectorInterface;
 use Vendimia\Database\Driver\ConnectorAbstract;
+use Vendimia\Database\Migration\FieldDef;
 use Vendimia\Database\DatabaseException;
 
 use SQLite3;
@@ -166,4 +167,19 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return 1;
     }
 
+
+    /**
+     * Enum is emulated via a TEXT field with a CHECK constrain. Requieres a 'values' property.
+     */
+    public function buildEnumFieldDefName(FieldDef $fielddef): array
+    {
+        if (!$fielddef->values) {
+            throw new InvalidArgumentException("'Enum' field requires a 'values' property with valid values");
+        }
+
+        return [
+            $this->escapeIdentifier($fielddef->name),
+            $this->getNativeType($fielddef->type) . ' CHECK(' . $this->escapeIdentifier($fielddef->name) . ' IN (' . join(',', $this->escape($fielddef->values)) . '))',
+        ];
+    }
 }
