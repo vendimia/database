@@ -10,8 +10,15 @@ use Vendimia\Database\Migration\FieldDef;
  */
 class Schema
 {
-    private $fields = [];
-    private $indexes = [];
+    // Fields to be added (or created)
+    private $add_fields = [];
+
+    // Fields to be changed. Original field is the key
+    private $change_fields = [];
+
+    // Indexes to be created
+    private $create_indexes = [];
+
     private $primary_keys = [];
 
     public function __construct(
@@ -31,7 +38,9 @@ class Schema
         ?int $decimal = null,
         ?array $values = null,
         bool $null = false,
-        $default = null,
+        bool $default = null,
+        bool $rename_from = null,
+        $action = 'add',
     )
     {
         $fielddef = new FieldDef(
@@ -44,17 +53,21 @@ class Schema
             default: $default,
         );
 
+        $array_name = "{$action}_fields";
+
+        // Si estamos renombrando, usamos el nombre antiguo
+        if ($renamed_from) {
+            $name = $renamed_from;
+        }
+
         // Convertimos FieldType en el nombre del tipo de la base de datos
-        $this->fields[] = Setup::$connector->buildFieldDef($fielddef);
+        $this->{$array_name}[$name] = Setup::$connector->buildFieldDef($fielddef);
     }
 
     /**
      * Creates an index
      */
-    public function index(
-        ...$field_names,
-
-    )
+    public function index(...$field_names)
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
         $this->indexes[] = Setup::$connector->buildIndexDef($this->table_name, $field_names);
@@ -89,6 +102,14 @@ class Schema
     }
 
     /**
+     * Changes the definition of a field
+     */
+    public function changeField(...$args) {
+        $args['action'] = 'change';
+        $this->field(...$args);
+    }
+
+    /**
      * Returns this schema table name
      */
     public function getTableName(): string
@@ -102,7 +123,7 @@ class Schema
      */
     public function getFieldsForCreate(): string
     {
-        $return = $this->fields;
+        $return = $this->add_fields;
 
         if ($this->primary_keys) {
             // La definición de PRIMARY KEY es la misma en sqlite, mysql y pqsql
@@ -114,11 +135,19 @@ class Schema
     }
 
     /**
-     * Retuns the fields list, used for update
+     * Retuns the 'add' fields list, used for update
      */
-    public function getFields(): array
+    public function getAddFields(): array
     {
-        return $this->fields;
+        return $this->add_fields;
+    }
+
+    /**
+     * Retuns the 'change' fields list, used for changing
+     */
+    public function getChangeFields(): array
+    {
+        return $this->change_fields;
     }
 
     /**

@@ -16,12 +16,25 @@ class Update implements ActionInterface
         Schema $schema
     )
     {
-        // Empezamos actualizando la tabla
-        foreach ($schema->getFields() as $fielddef) {
+        // Empezamos añadiendo nuevos campos
+        foreach ($schema->getAddFields() as $fielddef) {
             $alter_table = 'ALTER TABLE ' .
                 $connection->escapeIdentifier($schema->getTableName()) .
                 " ADD {$fielddef}"
             ;
+
+            $connection->execute($alter_table);
+        }
+
+        // Ahora los cambios que requieren ser cambiados
+        foreach ($schema->getChangeFields() as $field_name => $fielddef) {
+            $alter_table = join(' ', [
+                'ALTER TABLE',
+                $connection->escapeIdentifier($schema->getTableName()),
+                "CHANGE",
+                $connection->escapeIdentifier($field_name),
+                $fielddef,
+            ]);
 
             $connection->execute($alter_table);
         }
