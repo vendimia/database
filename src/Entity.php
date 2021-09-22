@@ -118,7 +118,7 @@ abstract class Entity
             // Esto es _casi_ un hack: Si piden 'id', y no existe, creamos un field
             if ($field == 'id' && !isset(static::$primary_key)) {
                 // Craemos un objeto
-                return new Field\Integer(
+                return new Field\AutoIncrement(
                     name: 'id',
                     entity_class: static::class,
                     args: [
@@ -187,7 +187,7 @@ abstract class Entity
 
         // Si no hay una llave primaria definida, creamos una llamada 'id'
         if (!isset(static::$primary_key)) {
-            $fields = ['id' => new Field\Integer(
+            $fields = ['id' => new Field\AutoIncrement(
                 name: 'id',
                 entity_class: static::class,
                 args: [
