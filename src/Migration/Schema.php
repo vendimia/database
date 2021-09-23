@@ -56,8 +56,8 @@ class Schema
         $array_name = "{$action}_fields";
 
         // Si estamos renombrando, usamos el nombre antiguo
-        if ($renamed_from) {
-            $name = $renamed_from;
+        if ($rename_from) {
+            $name = $rename_from;
         }
 
         // Convertimos FieldType en el nombre del tipo de la base de datos
