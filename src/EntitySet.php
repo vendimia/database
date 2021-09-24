@@ -90,19 +90,24 @@ class EntitySet implements Iterator
      * Otherwise it will be that field's value.
      */
     public function asArray(
-        string $value_field,
+        string $value_field = null,
         string $index_field = null
     ): array
     {
         $return = [];
         while ($entity = $this->fetch()) {
+            if ($value_field) {
+                $value = $entity->$value_field;
+            } else {
+                $value = $entity->asArray();
+            }
             if ($index_field) {
                 $key = $entity->$index_field;
             } else {
                 $key = $entity->pk();
             }
 
-            $return[$key] = $entity->$value_field;
+            $return[$key] = $value;
         }
 
         return $return;
