@@ -10,7 +10,7 @@ class Boolean extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::Bool;
+        return FieldType::Boolean;
     }
 
     public function processPHPValue($value)
