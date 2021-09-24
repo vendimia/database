@@ -54,6 +54,8 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             FieldType::Char => 'VARCHAR',
             FieldType::FixChar => 'CHAR',
             FieldType::Text => 'TEXT',
+            FieldType::MediumText => 'MEDIUMTEXT',
+            FieldType::LongText => 'LONGTEXT',
             FieldType::Blob => 'BLOB',
 
             FieldType::Date => 'DATE',
@@ -69,20 +71,18 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
     public function escape(mixed $value, string $quote_char = '\''): string|array
     {
-        // Ya que los numeros /también/ son strings, procesamos is_numeric
-        // primero
         if (is_array($value)) {
             return array_map(
                 fn($value) => $this->escape($value, $quote_char),
                 $value
             );
-        } elseif (is_numeric($value)) {
-            // Los números no requieren quotes
-            return $value;
         } elseif (is_string($value)) {
             return $quote_char
                 . $this->db->real_escape_string($value)
                 . $quote_char;
+        } elseif (is_numeric($value)) {
+            // Los números no requieren quotes
+            return $value;
         } elseif (is_null($value)) {
             return 'NULL';
         } elseif (is_bool($value)) {

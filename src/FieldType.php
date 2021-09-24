@@ -24,6 +24,8 @@ enum FieldType
     case Char;
     case FixChar;
     case Text;
+    case MediumText;
+    case LongText;
     case Blob;
 
     // Date/Time

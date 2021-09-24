@@ -44,6 +44,8 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             FieldType::Char => 'TEXT',
             FieldType::FixChar => 'TEXT',
             FieldType::Text => 'TEXT',
+            FieldType::MediumText => 'TEXT',
+            FieldType::LongText => 'TEXT',
             FieldType::Blob => 'BLOB',
 
             FieldType::Date => 'TEXT',
