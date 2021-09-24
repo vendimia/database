@@ -151,11 +151,11 @@ class Schema
     }
 
     /**
-     * Returns $this->$indexes
+     * Returns the indexes to be created
      */
-    public function getIndexes()
+    public function getCreateIndexes()
     {
-        return $this->indexes;
+        return $this->create_indexes;
     }
 
 }

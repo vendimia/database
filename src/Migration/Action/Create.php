@@ -25,7 +25,7 @@ class Create implements ActionInterface
         $connection->execute($create);
 
         // Ahora sus índices.
-        foreach ($schema->getIndexes() as $create_index) {
+        foreach ($schema->getCreateIndexes() as $create_index) {
             $connection->execute($create_index);
         }
     }
