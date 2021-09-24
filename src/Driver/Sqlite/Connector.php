@@ -31,7 +31,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return match($type) {
             FieldType::AutoIncrement => 'INTEGER',
 
-            FieldType::Bool => 'INTEGER',
+            FieldType::Boolean => 'INTEGER',
             FieldType::Byte => 'INTEGER',
             FieldType::SmallInt => 'INTEGER',
             FieldType::Integer => 'INTEGER',

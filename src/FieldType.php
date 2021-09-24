@@ -9,7 +9,7 @@ enum FieldType
     case AutoIncrement;
 
     // Integers
-    case Bool;
+    case Boolean;
     case Byte;
     case SmallInt;
     case Integer;
