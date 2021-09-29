@@ -226,6 +226,15 @@ abstract class Entity
     }
 
     /**
+     * Creates a new entity in memory, like a `new Entity`
+     */
+    public static function new(...$data): self
+    {
+        return new static(...$data);
+    }
+
+
+    /**
      * Creates a new entity, and saves it in the database
      */
     public static function create(...$data): self
