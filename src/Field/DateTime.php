@@ -17,7 +17,8 @@ class DateTime extends FieldAbstract
     {
         $value = parent::processPHPValue($value);
 
-        if (is_string($value)) {
+        $ok = false;
+        if (is_string($value) || is_null($value)) {
             $ok = true;
         } elseif (is_object($value)) {
             // Sólo permitimos dos tipos de objetos
