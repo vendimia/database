@@ -65,12 +65,23 @@ class Schema
     }
 
     /**
-     * Creates an index
+     * Creates an index for each field name
      */
     public function index(...$field_names)
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
-        $this->indexes[] = Setup::$connector->buildIndexDef($this->table_name, $field_names);
+        $this->indexes[] = Setup::$connector->buildIndexDef(
+            $this->table_name,
+            $field_names
+        );
+    }
+
+    /**
+     * Alias of self::index()
+     */
+    public function addIndex(...$field_names)
+    {
+        return $this->index(...$field_names);
     }
 
     /**
@@ -78,12 +89,24 @@ class Schema
      */
     public function uniqueIndex(
         ...$field_names,
-
     )
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
-        $this->indexes[] = Setup::$connector->buildIndexDef($this->table_name, $field_names, true);
+        $this->indexes[] = Setup::$connector->buildIndexDef(
+            $this->table_name,
+            $field_names,
+            unique: true
+        );
     }
+
+    /**
+     * Alias of self::uniqueIndex()
+     */
+    public function addUniqueIndex(...$field_names)
+    {
+        return $this->index(...$field_names);
+    }
+
 
     /**
      * Creates a primary key using $fields
