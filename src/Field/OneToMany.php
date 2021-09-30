@@ -13,10 +13,12 @@ class OneToMany extends FieldAbstract
         // Target Entity
         'entity' => null,
 
-        // Field in target entity linked to this Entity primary key.
+        // Field in target entity linked to this Entity local key
         // Default $target_entity->getName()
         'foreign_key' => null,
 
+        // Field in this entity for linking. Defaults to the primary key.
+        'local_key' => null,
     ];
 
     public function __construct(...$args)
@@ -31,6 +33,7 @@ class OneToMany extends FieldAbstract
         }
 
         $this->properties['foreign_key'] ??= ($this->entity_class)::getName();
+        $this->properties['local_key'] ??= ($this->entity_class)::getPrimaryKeyField()->getName();
     }
 
     public function getFieldType(): ?FieldType
@@ -53,14 +56,12 @@ class OneToMany extends FieldAbstract
      */
     public function postProc(): void
     {
+        $target_entity = $this->properties['entity'];
         $this->entity->{$this->name} = new EntitySet(
-            $this->properties['entity'],
+            $target_entity,
             constrains: [
-                /*[
-                    ($this->properties['entity'])::F($this->properties['foreign_key']),
-                    $this->entity
-                ]*/
-                $this->properties['foreign_key'] => $this->entity->pk()
+                $this->properties['foreign_key'] =>
+                    $this->entity->{$this->properties['local_key']}
             ]
         );
     }
