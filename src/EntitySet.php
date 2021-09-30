@@ -2,6 +2,7 @@
 namespace Vendimia\Database;
 
 use Vendimia\Database\Driver\Result;
+use InvalidArgumentException;
 use Iterator;
 
 class EntitySet implements Iterator
