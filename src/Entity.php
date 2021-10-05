@@ -383,10 +383,11 @@ abstract class Entity
         }
 
         $pk_value = $payload[$pk_field] ?? null;
-        $pk = null;
+
+        $update_ok = false;
         if ($pk_value) {
             // Probamos actualizar.
-            $pk = Setup::$connector->update(
+            $update_ok = Setup::$connector->update(
                 static::getTableName(),
                 $payload,
                 "{$pk_field} = " . $pk_value
@@ -394,14 +395,14 @@ abstract class Entity
         }
 
         // Si no actualizó, grabamos como nuevo
-        if (!$pk) {
-            $pk = Setup::$connector->insert(
+        if (!$update_ok) {
+            $pk_value = Setup::$connector->insert(
                 static::getTableName(),
                 $payload,
             );
         }
 
-        $this->$pk_field = $pk;
+        $this->$pk_field = $pk_value;
 
         foreach ($post_proc_fields as $field){
             $field->postProc();
