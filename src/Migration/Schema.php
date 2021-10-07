@@ -38,7 +38,7 @@ class Schema
         ?int $decimal = null,
         ?array $values = null,
         bool $null = false,
-        bool $default = null,
+        mixed $default = null,
         bool $rename_from = null,
         $action = 'add',
     )
