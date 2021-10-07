@@ -159,6 +159,75 @@ class Query
     }
 
     /**
+     * Retuns MAX(field) from the query
+     */
+    public function max($field): int
+    {
+        $field = Setup::$connector->escapeIdentifier($field);
+
+        $this->fields = ["MAX({$field}) as __MAX"];
+
+        $sql = $this->getSQL();
+        $result = Setup::$connector->execute($sql);
+
+        $data = $result->fetch();
+
+        return intval($data['__MAX']);
+    }
+
+    /**
+     * Retuns MIN(field) from the query
+     */
+    public function min($field): int
+    {
+        $field = Setup::$connector->escapeIdentifier($field);
+
+        $this->fields = ["MIN({$field}) as __MIN"];
+
+        $sql = $this->getSQL();
+        $result = Setup::$connector->execute($sql);
+
+        $data = $result->fetch();
+
+        return intval($data['__MIN']);
+    }
+
+    /**
+     * Retuns AVG(field) from the query
+     */
+    public function AVG($field): int
+    {
+        $field = Setup::$connector->escapeIdentifier($field);
+
+        $this->fields = ["AVG({$field}) as __AVG"];
+
+        $sql = $this->getSQL();
+        $result = Setup::$connector->execute($sql);
+
+        $data = $result->fetch();
+
+        return intval($data['__AVG']);
+    }
+
+    /**
+     * Retuns SUM(field) from the query
+     */
+    public function SUM($field): int
+    {
+        $field = Setup::$connector->escapeIdentifier($field);
+
+        $this->fields = ["SUM({$field}) as __SUM"];
+
+        $sql = $this->getSQL();
+        $result = Setup::$connector->execute($sql);
+
+        $data = $result->fetch();
+
+        return intval($data['__SUM']);
+    }
+
+
+    /**
      * Creates the actual SQL
      */
     public function getSQL(): string
