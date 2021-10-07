@@ -6,11 +6,11 @@ use InvalidArgumentException;
 use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class DateTime extends FieldAbstract
+class Time extends FieldAbstract
 {
     public function getFieldType(): FieldType
     {
-        return FieldType::DateTime;
+        return FieldType::Time;
     }
 
     public function processPHPValue($value)
@@ -25,7 +25,7 @@ class DateTime extends FieldAbstract
             if ($value instanceof \DateTime ||
                 $value instanceof \Vendimia\DateTime\DateTime
             ) {
-                $value = $value->format('Y-m-d H:i:s');
+                $value = $value->format('Y-m-d');
                 $ok = true;
             }
         }
@@ -44,8 +44,8 @@ class DateTime extends FieldAbstract
         // Si $this->properties['class_value'] tiene valor, el resultado ya
         // es un objeto.
         if (!is_object($result)) {
-            if (class_exists(\Vendimia\DateTime\DateTime::class)) {
-                return new \Vendimia\DateTime\DateTime($result);
+            if (class_exists(\Vendimia\DateTime\Time::class)) {
+                return new \Vendimia\DateTime\Time($result);
             }
         }
     }
