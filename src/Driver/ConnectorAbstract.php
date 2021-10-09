@@ -55,6 +55,30 @@ abstract class ConnectorAbstract
     }
 
     /**
+     * Starts a transaction
+     */
+    public function startTransaction()
+    {
+        $this->execute('START TRANSACTION');
+    }
+
+    /**
+     * Persists the operations executed inside the transaction
+     */
+    public function commitTransaction()
+    {
+        $this->execute('COMMIT');
+    }
+
+    /**
+     * Cancels all the operations executed inside the transaction
+     */
+    public function rollbackTransaction()
+    {
+        $this->execute('ROLLBACK');
+    }
+
+    /**
      * Builds a database field definition
      */
     public function buildFieldDef(FieldDef $fielddef): string

@@ -97,6 +97,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     }
 
     /**
+     * SQlite has a different START TRANSACTION statement
+     */
+    public function startTransaction()
+    {
+        $this->execute('BEGIN TRANSACTION');
+    }
+
+    /**
      * Executes a SQL query
      */
     public function execute(string $query): Result
