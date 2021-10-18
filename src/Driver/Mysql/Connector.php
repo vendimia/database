@@ -89,6 +89,9 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             return $value ? '1' : '0';
         } elseif (is_object($value)) {
             if ($value instanceof Entity) {
+                if ($value->isEmpty()) {
+                    return 'NULL';
+                }
                 return $value->pk();
             }
             if ($value instanceof DatabaseValue) {
