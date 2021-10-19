@@ -408,6 +408,8 @@ abstract class Entity
             $field->postProc();
         }
 
+        // Este registro ya no está vacío.
+        $this->is_empty = false;
     }
 
     /**
