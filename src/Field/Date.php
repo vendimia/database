@@ -31,7 +31,11 @@ class Date extends FieldAbstract
         }
 
         if (!$ok) {
-            throw new InvalidArgumentException("Value for field '{$this->name}' must be an string, or a DateTime (PHP or Vendimia) object");
+            $type = gettype($value);
+            if ($type == 'object')  {
+                $type = 'object:' . $value::class;
+            }
+            throw new InvalidArgumentException("Value for field '{$this->name}' must be a date string or a DateTime (PHP or Vendimia) object, got '{$type}' instead");
         }
 
         return $value;
