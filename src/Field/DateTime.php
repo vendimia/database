@@ -22,9 +22,14 @@ class DateTime extends FieldAbstract
             $ok = true;
         } elseif (is_object($value)) {
             // Sólo permitimos dos tipos de objetos
-            if ($value instanceof \DateTime ||
-                $value instanceof \Vendimia\DateTime\DateTime
-            ) {
+            if ($value instanceof \Vendimia\DateTime\DateTime) {
+                if ($value->isNull()) {
+                    $value = null;
+                } else {
+                    $value = $value->format('Y-m-d H:i:s');
+                }
+                $ok = true;
+            } elseif ($value instanceof \DateTime) {
                 $value = $value->format('Y-m-d H:i:s');
                 $ok = true;
             }
@@ -37,7 +42,6 @@ class DateTime extends FieldAbstract
             }
             throw new InvalidArgumentException("Value for field '{$this->name}' must be a date string or a DateTime (PHP or Vendimia) object, got '{$type}' instead");
         }
-
         return $value;
     }
 

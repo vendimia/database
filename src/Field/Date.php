@@ -22,9 +22,14 @@ class Date extends FieldAbstract
             $ok = true;
         } elseif (is_object($value)) {
             // Sólo permitimos dos tipos de objetos
-            if ($value instanceof \DateTime ||
-                $value instanceof \Vendimia\DateTime\DateTime
-            ) {
+            if ($value instanceof \Vendimia\DateTime\DateTime) {
+                if ($value->isNull()) {
+                    $value = null;
+                } else {
+                    $value = $value->format('Y-m-d');
+                }
+                $ok = true;
+            } elseif ($value instanceof \DateTime) {
                 $value = $value->format('Y-m-d');
                 $ok = true;
             }

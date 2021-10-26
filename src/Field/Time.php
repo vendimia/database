@@ -22,10 +22,15 @@ class Time extends FieldAbstract
             $ok = true;
         } elseif (is_object($value)) {
             // Sólo permitimos dos tipos de objetos
-            if ($value instanceof \DateTime ||
-                $value instanceof \Vendimia\DateTime\DateTime
-            ) {
-                $value = $value->format('Y-m-d');
+            if ($value instanceof \Vendimia\DateTime\DateTime) {
+                if ($value->isNull()) {
+                    $value = null;
+                } else {
+                    $value = $value->format('H:i:s');
+                }
+                $ok = true;
+            } elseif ($value instanceof \DateTime) {
+                $value = $value->format('H:i:s');
                 $ok = true;
             }
         }
