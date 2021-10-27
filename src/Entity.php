@@ -349,11 +349,11 @@ abstract class Entity
     /**
      * Save the entity to the database
      */
-    public function save()
+    public function save($disable_hooks = false)
     {
-        // Antes de grabar, ejecutamos el callbacl self::$on_save, si existe
-        if (isset(static::$on_save)) {
-            $method = static::$on_save;
+        // Antes de grabar, ejecutamos el callbacl self::$pre_save, si existe
+        if (!$disable_hooks && isset(static::$pre_save)) {
+            $method = static::$pre_save;
             $this->$method();
         }
 
@@ -410,6 +410,13 @@ abstract class Entity
 
         // Este registro ya no está vacío.
         $this->is_empty = false;
+
+        // Ejecutamos el callback self::$post_save, si existe
+        if (!$disable_hooks && isset(static::$post_save)) {
+            $method = static::$post_save;
+            $this->$method();
+        }
+
     }
 
     /**
