@@ -166,6 +166,22 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     }
 
     /**
+     * Executes a SQL DELETE. Returns the number of records affected.
+     */
+    public function delete(
+        string $table,
+        string $where
+    ): int
+    {
+        $sql = $this->prepareDelete($table, $where);
+
+        $result = $this->execute($sql);
+
+        return $this->db->affected_rows;
+    }
+
+
+    /**
      * Varchar requieres a length
      */
     public function buildCharFieldDefName(FieldDef $fielddef): array

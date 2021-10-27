@@ -83,7 +83,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             if ($value instanceof Entity) {
                 if ($value->isEmpty()) {
                     return 'NULL';
-                }                
+                }
                 return $value->pk();
             }
             if ($value instanceof DatabaseValue) {
@@ -179,6 +179,22 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         // Al parecer, PHP no soporta sqlite_changes()
         return 1;
     }
+
+    /**
+     * Executes a SQL DELETE. Returns the number of records affected.
+     */
+    public function delete(
+        string $table,
+        string $where
+    ): int
+    {
+        $sql = $this->prepareDelete($table, $where);
+
+        $result = $this->execute($sql);
+
+        return 1;
+    }
+
 
 
     /**

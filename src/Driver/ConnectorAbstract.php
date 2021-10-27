@@ -11,7 +11,7 @@ use InvalidArgumentException;
 abstract class ConnectorAbstract
 {
     /**
-     * Prepares an SQL INSERT statement
+     * Prepares a SQL INSERT statement
      */
     protected function prepareInsert(string $table, array $payload): string
     {
@@ -30,7 +30,7 @@ abstract class ConnectorAbstract
     }
 
     /**
-     * Prepares an SQL UPDATE statement
+     * Prepares a SQL UPDATE statement
      */
     protected function prepareUpdate(
         string $table,
@@ -50,6 +50,21 @@ abstract class ConnectorAbstract
         if (!is_null($where)) {
             $sql .= ' WHERE ' . $where;
         }
+
+        return $sql;
+    }
+
+    /**
+     * Prepares a SQL DELETE statement
+     */
+    public function prepareDelete(
+        string $table,
+        string $where
+    )
+    {
+        $sql = "DELETE FROM " . $this->escapeIdentifier($table) . ' WHERE '
+            . $where
+        ;
 
         return $sql;
     }
