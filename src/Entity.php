@@ -425,6 +425,18 @@ abstract class Entity
     }
 
     /**
+     * Deletes an entity from the database
+     */
+    public function delete()
+    {
+        $pk_field = static::getPrimaryKeyField()->getFieldName();
+        Setup::$connector->delete(
+            static::getTableName(),
+            "{$pk_field} = " . $this->pk()
+        );
+    }
+
+    /**
      * Retrieves the record from the database using the pk value
      */
     public function load()
