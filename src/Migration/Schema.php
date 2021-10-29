@@ -40,6 +40,7 @@ class Schema
         bool $null = false,
         mixed $default = null,
         bool $rename_from = null,
+        bool $after = null,
         $action = 'add',
     )
     {

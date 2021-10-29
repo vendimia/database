@@ -22,5 +22,9 @@ class FieldDef extends DataContainer
     public ?array $values = null;
 
     public bool $null = false;
+
     public $default = null;
+
+    /** For supporting engines, field after which this new field will be inserted */
+    public ?string $after = null;
 }
