@@ -20,4 +20,13 @@ class Result
     {
         return $this->connector->fetch($this->result);
     }
+
+    /**
+     * @see ConnectorInterface::fetch()
+     */
+    public function free()
+    {
+        return $this->connector->free($this->result);
+    }
+
 }

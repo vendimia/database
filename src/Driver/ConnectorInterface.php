@@ -37,6 +37,11 @@ interface ConnectorInterface
     public function fetch($result): ?array;
 
     /**
+     * Frees the memory associated with a result
+     */
+    public function free($result): void;
+
+    /**
      * Executes a SQL INSERT. Returns the primary key value.
      */
     public function insert(string $table, array $payload): int;

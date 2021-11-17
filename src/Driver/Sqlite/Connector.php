@@ -136,6 +136,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     }
 
     /**
+     * Frees the memory associated with a result
+     */
+    public function free($result): void
+    {
+        $result->finalize();
+    }
+
+    /**
      * Executes a SQL INSERT. Returns the primary key value.
      */
     public function insert(string $table, array $payload): int

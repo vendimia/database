@@ -142,7 +142,9 @@ class EntitySet implements Iterator
 
     public function rewind(): void
     {
-
+        // Forzamos a reejecutar el query
+        $this->result?->free();
+        $this->load();
     }
 
     public function valid(): bool
