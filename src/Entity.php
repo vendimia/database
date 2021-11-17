@@ -123,6 +123,14 @@ abstract class Entity
     }
 
     /**
+     * Alias to find()
+     */
+    public static function all(...$where)
+    {
+        return (new Query(static::class, $where))->find();
+    }
+
+    /**
      * Creates a Query, for obtaining data from the database.
      */
     public static function query(...$where)
@@ -226,7 +234,7 @@ abstract class Entity
     }
 
     /**
-     * Creates a new entity in memory, like a `new Entity`
+     * Creates a new entity in memory, like the statement `new Entity(...$data)`
      */
     public static function new(...$data): self
     {
