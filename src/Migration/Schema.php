@@ -71,7 +71,7 @@ class Schema
     public function index(...$field_names)
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
-        $this->indexes[] = Setup::$connector->buildIndexDef(
+        $this->create_indexes[] = Setup::$connector->buildIndexDef(
             $this->table_name,
             $field_names
         );
@@ -93,7 +93,7 @@ class Schema
     )
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
-        $this->indexes[] = Setup::$connector->buildIndexDef(
+        $this->create_indexes[] = Setup::$connector->buildIndexDef(
             $this->table_name,
             $field_names,
             unique: true
