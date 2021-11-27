@@ -10,7 +10,7 @@ use RuntimeException;
  */
 class Query
 {
-    use Where;
+    use WhereTrait;
 
     /** Tables used in the query */
 
@@ -195,7 +195,7 @@ class Query
     /**
      * Retuns AVG(field) from the query
      */
-    public function AVG($field): int
+    public function avg($field): int
     {
         $field = Setup::$connector->escapeIdentifier($field);
 
@@ -212,7 +212,7 @@ class Query
     /**
      * Retuns SUM(field) from the query
      */
-    public function SUM($field): int
+    public function sum($field): int
     {
         $field = Setup::$connector->escapeIdentifier($field);
 

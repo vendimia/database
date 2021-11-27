@@ -6,7 +6,7 @@ namespace Vendimia\Database;
  */
 class Join
 {
-    use Where;
+    use WhereTrait;
 
     private $table;
 
