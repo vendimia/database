@@ -19,6 +19,14 @@ class TableAliases
     }
 
     /**
+     * Returns the alias table count
+     */
+    public function getTableCount(): int
+    {
+        return count($this->table);
+    }
+
+    /**
      * Adds and returns a new table alias.
      */
     public function addTableAlias($name, $join_group = false): string
@@ -53,11 +61,15 @@ class TableAliases
     /**
      * Returns the full escaped field name, including table alias name
      */
-    public function getFullFieldName($table, $field): string
+    public function getFullFieldName($table, $field, $simple = false): string
     {
-        $table = $this->connector->escapeIdentifier($this->getTableAlias($table));
         $field = $this->connector->escapeIdentifier($field);
 
+        if ($simple) {
+            return $field;
+        }
+
+        $table = $this->connector->escapeIdentifier($this->getTableAlias($table));
         return "{$table}.{$field}";
     }
 

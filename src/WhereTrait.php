@@ -1,6 +1,8 @@
 <?php
 namespace Vendimia\Database;
 
+use DomainException;
+
 /**
  * Methods for building a WHERE section, also used in JOINs
  *
@@ -11,27 +13,31 @@ trait WhereTrait
     /**
      * WHERE data
      *
-     * A sucession of arrays what will be AND-joined and enclosed in parenthesis.
-     * Each array is in itself an array of complete query string
+     * Each element has the format [BOOLEAN-OPERATOR,QUERY,SIMPLE-QUERY]
+     *
+     * SIMPLE-QUERY is the query without table information, used when deleting
+     * entity sets
      */
     public $where_parts = [];
 
-    /** Boolean joint for next 'where' */
-    public $where_joint = 'AND';
+    /** Boolean operator for next 'where' */
+    public $next_boolean_opeartor = 'AND';
 
     /**
      * Builds a simple comparison element
      */
-    public function buildElement($left, $right)
+    public function buildElement($left, $right, $simple = false)
     {
         if ($left instanceof Field\FieldAbstract) {
             $left = $this->table_aliases->getFullFieldName(
-                ...$left->getFullFieldName()
+                ...$left->getFullFieldName(),
+                simple: $simple,
             );
         } else {
             $left = $this->table_aliases->getFullFieldName(
                 //$this->target_class::getTableName(),
                 ...$this->target_class::F($left)->getFullFieldName(),
+                simple: $simple,
             );
         }
 
@@ -56,20 +62,23 @@ trait WhereTrait
      */
     private function addFromArray($args)
     {
-        $where = '';
+        $where = [];
+        $simple_where = [];
 
         foreach ($args as $field => $value) {
 
-            if ($where) {
+            /*if ($where) {
                 $where .= " AND ";
-            }
+            }*/
 
-            $where .= $this->buildElement($field, $value);
+            $where[] = $this->buildElement($field, $value);
+            $simple_where[] = $this->buildElement($field, $value, simple: true);
         }
 
         $this->where_parts[] = [
-            $this->where_joint,
-            $where,
+            $this->next_boolean_opeartor,
+            join(' AND ', $where),
+            join(' AND ', $simple_where),
         ];
     }
 
@@ -78,20 +87,22 @@ trait WhereTrait
      */
     private function addFromArrayList($arrays)
     {
-        $where = '';
+        $where = [];
+        $simple_where = [];
 
         foreach ($arrays as $element) {
-
-            if ($where) {
-                $where .= " AND ";
-            }
-
-            $where .= $this->buildElement($element[0], $element[1]);
+            $where[] = $this->buildElement($element[0], $element[1]);
+            $simple_where[] = $this->buildElement(
+                $element[0],
+                $element[1],
+                simple: true
+            );
         }
 
         $this->where_parts[] = [
-            $this->where_joint,
-            $where,
+            $this->next_boolean_opeartor,
+            join(' AND ', $where),
+            join(' AND ', $simple_where),
         ];
 
     }
@@ -147,7 +158,7 @@ trait WhereTrait
      */
     public function or(...$args): self
     {
-        $this->where_joint = 'OR';
+        $this->next_boolean_opeartor = 'OR';
         $this->where(...$args);
 
         return $this;
@@ -158,7 +169,7 @@ trait WhereTrait
      */
     public function and(...$args): self
     {
-        $this->where_joint = 'AND';
+        $this->next_boolean_opeartor = 'AND';
         $this->where(...$args);
 
         return $this;
@@ -180,4 +191,28 @@ trait WhereTrait
 
         return join(' ', $sql);
     }
+
+    /**
+     * Returns the SQL WHERE without table information
+     *
+     * @throws DomainException if there is more than one table in this query.
+     */
+    public function getSimpleSQLWhereString(): string
+    {
+        if ($this->table_aliases->getTableCount() > 1) {
+            throw new DomainException("This operation can't be performed, multiple tables are involved.");
+        }
+        $sql = [];
+
+        foreach ($this->where_parts as $part) {
+            if ($sql) {
+                $sql[] = $part[0];
+            }
+            $sql[] = "({$part[2]})";
+        }
+
+        return join(' ', $sql);
+
+    }
+
 }

@@ -125,6 +125,26 @@ class EntitySet implements Iterator
         return $entity->update(...$this->constrains);
     }
 
+    /**
+     * Deletes all the entities in this set
+     */
+    public function delete()
+    {
+        if ($this->query) {
+            $where = $this->query->getSimpleSQLWhereString();
+        } else {
+            $where = new SimpleWhere(
+                $this->target_class,
+                $this->constrains
+            );
+        }
+
+        Setup::$connector->delete(
+            $this->target_class::getTableName(),
+            $where
+        );
+    }
+
     public function current(): mixed
     {
         return $this->last_entity;
