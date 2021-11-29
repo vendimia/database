@@ -83,7 +83,7 @@ final class SchemaTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            $schema->getIndexes(),
+            $schema->getCreateIndexes(),
         );
     }
 
