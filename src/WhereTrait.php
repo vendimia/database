@@ -176,6 +176,24 @@ trait WhereTrait
     }
 
     /**
+     * Adds a raw SQL WHERE, replace {variables} with escaped $args
+     */
+    public function rawWhere($where, ...$args): self
+    {
+        $replace = [];
+        foreach ($args as $variable => $value) {
+            $replace['{' . $variable . '}'] = Setup::$connector->escape($value);
+        }
+
+        $this->where_parts[] = [
+            $this->next_boolean_opeartor,
+            strtr($where, $replace),
+        ];
+
+        return $this;
+    }
+
+    /**
      * Returns the SQL WHERE statement
      */
     public function getSQLWhereString(): string
