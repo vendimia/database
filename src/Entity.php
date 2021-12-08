@@ -7,8 +7,9 @@ use ReflectionException;
 use ReflectionAttribute;
 use ReflectionProperty;
 use InvalidArgumentException;
+use Stringable;
 
-abstract class Entity
+abstract class Entity implements Stringable
 {
     /** True if the query which generate this Entity returned no data */
     protected $is_empty = true;
@@ -269,7 +270,7 @@ abstract class Entity
      */
     public function pk()
     {
-        return $this->{$this::getPrimaryKeyField()->getName()};
+        return $this->{$this::getPrimaryKeyField()->getName()} ?? null;
     }
 
     /**
@@ -466,7 +467,7 @@ abstract class Entity
     /**
      * Returns this entity as an array
      */
-    public function asArray(): array
+    public function asArray($native_values = false): array
     {
         // Usamos ReflectionObject para obtener incluso las propiedades
         // creadas en runtime
@@ -482,12 +483,25 @@ abstract class Entity
         $result = [];
 
         foreach ($ref_properties as $rp) {
-            $result[$rp->name] = $this->{$rp->name};
+            $value = $this->{$rp->name};
+            if ($native_values) {
+                if ($value instanceof Stringable) {
+                    $value = (string)$value;
+                } elseif ($value instanceof EntitySet) {
+                    // Los EntitySet no tienen representación
+                    continue;
+                }
+            }
+            $result[$rp->name] = $value;
         }
 
         return $result;
     }
 
+    public function __toString()
+    {
+        return (string)$this->pk();
+    }
 
     public function __debugInfo()
     {
