@@ -126,6 +126,38 @@ class EntitySet implements Iterator
     }
 
     /**
+     * Performs an update on all the entities in this set
+     */
+    public function update(...$payload)
+    {
+        if ($this->query) {
+            $where = $this->query->getSimpleSQLWhereString();
+        } else {
+            $where = new SimpleWhere(
+                $this->target_class,
+                $this->constrains
+            );
+        }
+
+        // Si no hay un query, lo convertimos a null
+        if ($where == '') {
+            $where = null;
+        }
+
+        $update = [];
+        foreach ($payload as $field => $value) {
+            $update[$this->target_class::F($field)->getFieldName()]
+                = $value;
+        }
+
+        Setup::$connector->update(
+            $this->target_class::getTableName(),
+            $update,
+            $where
+        );
+    }
+
+    /**
      * Deletes all the entities in this set
      */
     public function delete()
