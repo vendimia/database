@@ -47,14 +47,18 @@ class DateTime extends FieldAbstract
 
     public function processDatabaseValue($value)
     {
-        $result = parent::processDatabaseValue($value);
+        $value = parent::processDatabaseValue($value);
 
-        // Si $this->properties['class_value'] tiene valor, el resultado ya
-        // es un objeto.
-        if (!is_object($result)) {
-            if (class_exists(\Vendimia\DateTime\DateTime::class)) {
-                return new \Vendimia\DateTime\DateTime($result);
-            }
+        // Si viene un objeto, o es null, lo retornamos tal cual.
+        if (is_object($value) || is_null($value)) {
+            return $value;
         }
+
+        // Si existe Vendima\DateTime\DateTime, retornamos una instancia de él
+        if (class_exists(\Vendimia\DateTime\DateTime::class)) {
+            return new \Vendimia\DateTime\DateTime($value);
+        }
+
+        return $value;
     }
 }

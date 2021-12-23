@@ -26,10 +26,14 @@ class Integer extends FieldAbstract
 
     public function processDatabaseValue($value)
     {
-        $result = parent::processDatabaseValue($value);
+        $value = parent::processDatabaseValue($value);
 
-        if (!is_object($result)) {
-            return intval($value);
+        // Si viene un objeto, o es null, lo retornamos tal cual.
+        if (is_object($value) || is_null($value)) {
+            return $value;
         }
+
+        // Retornamos el valor como integer
+        return intval($value);
     }
 }

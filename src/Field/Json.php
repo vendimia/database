@@ -33,11 +33,12 @@ class Json extends FieldAbstract
     {
         $result = parent::processDatabaseValue($value);
 
-        // Si $this->properties['class_value'] tiene valor, el resultado ya
-        // es un objeto.
-        if (!is_object($result)) {
-            return json_decode($result);
+        // Si viene un objeto, o es null, lo retornamos tal cual.
+        if (is_object($value) || is_null($value)) {
+            return $value;
         }
+
+        return json_decode($result);
     }
 
 }
