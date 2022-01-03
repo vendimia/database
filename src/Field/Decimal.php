@@ -31,7 +31,7 @@ class Decimal extends FieldAbstract
         $value = parent::processPHPValue($value);
 
         if (!is_numeric($value) && !is_null($value)) {
-            throw new InvalidArgumentException("Value for field '{$this->name}' must be an float");
+            throw new InvalidArgumentException("Value for field '{$this->name}' must be numeric");
         }
 
         return is_null($value) ? null : floatval($value);
