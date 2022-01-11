@@ -91,6 +91,29 @@ class Comparison
     }
 
     /**
+     * Used for comparing against NULL
+     */
+    private function comparisonNull()
+    {
+        $sql = ' IS ';
+        if ($this->not) {
+            $sql .= 'NOT ';
+        }
+        $sql .= 'NULL';
+
+        return $sql;
+    }
+
+    /**
+     * Alias of comparisonNull()
+     */
+    private function comparisonIsNull()
+    {
+        return $this->comparisonNull();
+    }
+
+
+    /**
      * Use the IN SQL keyword
      */
     private function comparisonIn($params)
