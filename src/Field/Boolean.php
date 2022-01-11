@@ -13,9 +13,9 @@ class Boolean extends FieldAbstract
         return FieldType::Boolean;
     }
 
-    public function processPHPValue($value)
+    public function processDatabaseValue($value)
     {
-        $value = parent::processPHPValue($value);
+        $value = parent::processDatabaseValue($value);
 
         return is_null($value) ? null : boolval($value);
     }
