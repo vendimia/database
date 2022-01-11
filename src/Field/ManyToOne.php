@@ -47,6 +47,10 @@ class ManyToOne extends FieldAbstract
      */
     public function postProc(): void
     {
+        // Si el valor es null, no hacemos nada
+        if (is_null($this->entity->{$this->name})) {
+            return;
+        }
         $entity = $this->properties['entity'];
         $this->entity->{$this->name} = $entity::get(
             ...[$this->properties['foreign_key'] => $this->entity->{$this->name}]
