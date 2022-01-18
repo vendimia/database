@@ -24,6 +24,9 @@ abstract class Entity implements Stringable
      * has been created by a ManyToOne field */
     protected $is_loaded = false;
 
+    /** Pre-loaded data from the database */
+    protected array $database_data = [];
+
     /**
      * Builds the default table name from the entity class name.
      */
@@ -114,6 +117,17 @@ abstract class Entity implements Stringable
     {
         return (new Query(static::class, $where))->get();
     }
+
+
+    /**
+     * Creates a Query which will return a non-loaded Entity of this class
+     */
+    public static function lazyGet(...$where)
+    {
+        return (new Query(static::class, $where))->get(lazy: true);
+    }
+
+
 
     /**
      * Creates a Query which will return a EntitySet of this class
@@ -262,7 +276,9 @@ abstract class Entity implements Stringable
         foreach ($data as $field => $value) {
             $this->$field = $value;
         }
-        $this->is_loaded = true;
+        if ($data) {
+            $this->is_loaded = true;
+        }
     }
 
     /**
@@ -276,17 +292,33 @@ abstract class Entity implements Stringable
     /**
      * Sets this entity as "incomplete" (not loaded)
      */
-    public function setIncomplete($pk): self
+    /*public function setIncomplete($pk): self
     {
         $this->{$this::getPrimaryKeyField()->getName()} = $pk;
         $this->is_loaded = false;
+    }*/
+
+    /**
+     * Preloads the database data
+     */
+    public function fromDatabase($data): self
+    {
+        $this->database_data = $data;
+        return $this;
     }
 
     /**
      * Sets the fields value from database data.
      */
-    public function fromDatabase($data): self
+    public function load(): self
     {
+        // No cargamos si ya está cargado
+        if ($this->is_loaded) {
+            return $this;
+        }
+
+        $data = $this->database_data;
+
         $fields = [];
         $post_proc_fields = [];
 
@@ -325,6 +357,9 @@ abstract class Entity implements Stringable
 
         // Ya no es nuevo
         $this->is_new = false;
+
+        // Ya está cargado
+        $this->is_loaded = true;
 
         return $this;
     }
@@ -455,14 +490,14 @@ abstract class Entity implements Stringable
     /**
      * Retrieves the record from the database using the pk value
      */
-    public function load()
+    /*public function load()
     {
         $query = new Query($this->target_class, [
             $this::getPrimaryKeyField()->getName() => $this->pk(),
         ]);
 
         $this->fromDatabase($query->getResult()->fetch());
-    }
+    }*/
 
     /**
      * Returns this entity as an array

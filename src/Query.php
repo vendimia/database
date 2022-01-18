@@ -122,7 +122,7 @@ class Query
     /**
      * Returns an Entity
      */
-    public function get(): Entity
+    public function get($lazy = false): Entity
     {
         $result = $this->getResult();
 
@@ -139,8 +139,13 @@ class Query
         }
 
         // Procesamos la data
-        return (new $this->target_class)->fromDatabase($data);
+        $entity = (new $this->target_class)->fromDatabase($data);
 
+        if (!$lazy) {
+            $entity->load();
+        }
+
+        return $entity;
     }
 
     /**

@@ -52,7 +52,7 @@ class ManyToOne extends FieldAbstract
             return;
         }
         $entity = $this->properties['entity'];
-        $this->entity->{$this->name} = $entity::get(
+        $this->entity->{$this->name} = $entity::lazyGet(
             ...[$this->properties['foreign_key'] => $this->entity->{$this->name}]
         );
     }

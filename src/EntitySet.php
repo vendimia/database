@@ -79,7 +79,7 @@ class EntitySet implements Iterator
         }
 
         $entity = new ($this->target_class);
-        $entity->fromDatabase($data);
+        $entity->fromDatabase($data)->load();
 
         return $entity;
     }
