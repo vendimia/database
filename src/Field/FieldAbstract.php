@@ -98,11 +98,11 @@ abstract class FieldAbstract implements FieldInterface
     }
 
     /**
-     * Returns a property
+     * Returns a property, returns $default if property doesn't exists.
      */
-    public function getProperty($property)
+    public function getProperty($property, $default = null)
     {
-        return $this->properties[$property];
+        return $this->properties[$property] ?? $default;
     }
 
     /**
