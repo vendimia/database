@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Exception;
 use RuntimeException;
 use MySQLi;
+use Stringable;
 
 class Connector extends ConnectorAbstract implements ConnectorInterface
 {
@@ -76,9 +77,9 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
                 fn($value) => $this->escape($value, $quote_char),
                 $value
             );
-        } elseif (is_string($value)) {
+        } elseif (is_string($value) || $value instanceof Stringable) {
             return $quote_char
-                . $this->db->real_escape_string($value)
+                . $this->db->real_escape_string((string)$value)
                 . $quote_char;
         } elseif (is_numeric($value)) {
             // Los números no requieren quotes

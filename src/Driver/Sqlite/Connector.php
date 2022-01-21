@@ -71,9 +71,9 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         } elseif (is_numeric($value)) {
             // Los números no requieren quotes
             return $value;
-        } elseif (is_string($value)) {
+        } elseif (is_string($value) || $value instanceof Stringable) {
             return $quote_char
-                . $this->db->escapeString($value)
+                . $this->db->escapeString((string)$value)
                 . $quote_char;
         } elseif (is_null($value)) {
             return 'NULL';
