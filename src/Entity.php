@@ -118,7 +118,6 @@ abstract class Entity implements Stringable
         return (new Query(static::class, $where))->get();
     }
 
-
     /**
      * Creates a Query which will return a non-loaded Entity of this class
      */
@@ -290,15 +289,6 @@ abstract class Entity implements Stringable
     }
 
     /**
-     * Sets this entity as "incomplete" (not loaded)
-     */
-    /*public function setIncomplete($pk): self
-    {
-        $this->{$this::getPrimaryKeyField()->getName()} = $pk;
-        $this->is_loaded = false;
-    }*/
-
-    /**
      * Preloads the database data
      */
     public function fromDatabase($data): self
@@ -390,12 +380,21 @@ abstract class Entity implements Stringable
         return !$this->is_empty;
     }
 
+    public function isLoaded()
+    {
+        return $this->is_loaded;
+    }
+    public function notLoaded()
+    {
+        return !$this->is_loaded;
+    }
+
     /**
      * Save the entity to the database
      */
-    public function save($disable_hooks = false)
+    public function save($disable_hooks = false, $fields = [])
     {
-        // Antes de grabar, ejecutamos el callbacl self::$pre_save, si existe
+        // Antes de grabar, ejecutamos el callback self::$pre_save, si existe
         if (!$disable_hooks && isset(static::$pre_save)) {
             $method = static::$pre_save;
             $this->$method();
@@ -406,7 +405,13 @@ abstract class Entity implements Stringable
 
         $pk_field = static::getPrimaryKeyField()->getFieldName();
 
-        foreach ($this->getFieldList() as $field) {
+        $field_list = $this->getFieldList();
+
+        if ($fields) {
+            $field_list = array_intersect_key($field_list, array_flip($fields));
+        }
+
+        foreach ($field_list as $field) {
             $field->setEntity($this);
 
             // Si este field requiere post-proceso, lo guardamos en otro listado
@@ -420,13 +425,19 @@ abstract class Entity implements Stringable
             }
             $value = $this->{$field->getName()};
 
+            // Fallamos si value es un objeto,y no está cargado
+            if (($value instanceof Entity) && $value?->isLoaded() === false) {
+                //throw new InvalidArgumentException("Entity in field '{$field->getName()}' needs to be loaded before saving this entity");
+                continue;
+            }
+
             // Solo guardamos el valor si el Field tiene un nombre de campo en la db
             if ($field_name = $field->getFieldName()) {
                 $payload[$field_name] = $field->processPHPValue($value);
             }
         }
 
-        $pk_value = $payload[$pk_field] ?? null;
+        $pk_value = $this->pk();
 
         $update_ok = false;
         if ($pk_value) {
@@ -455,12 +466,17 @@ abstract class Entity implements Stringable
         // Este registro ya no está vacío.
         $this->is_empty = false;
 
+        // Este registro ya no es nuevo
+        $this->is_new = false;
+
+        // Este registro ya está cargado
+        $this->is_loaded = true;
+
         // Ejecutamos el callback self::$post_save, si existe
         if (!$disable_hooks && isset(static::$post_save)) {
             $method = static::$post_save;
             $this->$method();
         }
-
     }
 
     /**
@@ -472,7 +488,12 @@ abstract class Entity implements Stringable
             $this->$key = $value;
         }
 
-        return $this->save();
+        // Si el entity es nuevo, grabamos todos los campos
+        if ($this->isNew()) {
+            return $this->save();
+        }
+
+        return $this->save(fields: array_keys($payload));
     }
 
     /**
@@ -486,18 +507,6 @@ abstract class Entity implements Stringable
             "{$pk_field} = " . $this->pk()
         );
     }
-
-    /**
-     * Retrieves the record from the database using the pk value
-     */
-    /*public function load()
-    {
-        $query = new Query($this->target_class, [
-            $this::getPrimaryKeyField()->getName() => $this->pk(),
-        ]);
-
-        $this->fromDatabase($query->getResult()->fetch());
-    }*/
 
     /**
      * Returns this entity as an array
