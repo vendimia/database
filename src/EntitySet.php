@@ -91,19 +91,27 @@ class EntitySet implements Iterator
      * Otherwise it will be that field's value.
      */
     public function asArray(
-        string $value_field = null,
-        string $index_field = null
+        Callable|string $value_field = null,
+        Callable|string $index_field = null
     ): array
     {
         $return = [];
         while ($entity = $this->fetch()) {
             if ($value_field) {
-                $value = $entity->$value_field;
+                if (is_callable($value_field)) {
+                    $value = $value_field($entity);
+                } else {
+                    $value = $entity->$value_field;
+                }
             } else {
                 $value = $entity->asArray();
             }
             if ($index_field) {
-                $key = $entity->$index_field;
+                if (is_callable($index_field)) {
+                    $key = $index_field($entity);
+                } else {
+                    $key = $entity->$index_field;
+                }
             } else {
                 $key = $entity->pk();
             }
