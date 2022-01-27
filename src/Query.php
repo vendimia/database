@@ -122,15 +122,15 @@ class Query
     /**
      * Returns an Entity
      */
-    public function get($lazy = false): Entity
+    public function get($lazy = false): ?Entity
     {
         $result = $this->getResult();
 
         $data = $result->fetch();
 
         if (is_null($data)) {
-            // Creamos una entidad vacía
-            return (new $this->target_class)->setEmpty();
+            // Retornamos null
+            return null;
         }
 
         // No debe haber más de un resultado
