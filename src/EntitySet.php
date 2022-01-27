@@ -124,13 +124,15 @@ class EntitySet implements Iterator
     /**
      * Appends an Entity to this set.
      */
-    public function append(Entity $entity)
+    public function append(Entity $entity): Entity
     {
         if($entity::class != $this->target_class) {
             throw new InvalidArgumentException("This EntitySet only accepts '{$this->target_class}' entities");
         }
 
-        return $entity->update(...$this->constrains);
+        $entity->update(...$this->constrains);
+
+        return $entity;
     }
 
     /**
