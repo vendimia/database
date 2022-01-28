@@ -38,7 +38,7 @@ class Json extends FieldAbstract
             return $value;
         }
 
-        return json_decode($result);
+        return json_decode($result, associative: true);
     }
 
 }
