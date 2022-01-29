@@ -2,6 +2,8 @@
 namespace Vendimia\Database\Field;
 
 use Vendimia\Database\FieldType;
+use Vendimia\Database\Entity;
+
 use Attribute;
 use InvalidArgumentException;
 
@@ -48,12 +50,18 @@ class ManyToOne extends FieldAbstract
     public function postProc(): void
     {
         // Si el valor es null, no hacemos nada
-        if (is_null($this->entity->{$this->name})) {
+        if (is_null($value = $this->entity->{$this->name})) {
             return;
         }
+
+        // Si el valor ya tiene una entidad, no hacemos nada
+        if ($value instanceof Entity) {
+            return;
+        }
+
         $entity = $this->properties['entity'];
         $this->entity->{$this->name} = $entity::lazyGet(
-            ...[$this->properties['foreign_key'] => $this->entity->{$this->name}]
+            ...[$this->properties['foreign_key'] => $value]
         );
     }
 }
