@@ -96,6 +96,7 @@ class EntitySet implements Iterator
     ): array
     {
         $return = [];
+        $this->rewind();
         while ($entity = $this->fetch()) {
             if ($value_field) {
                 if (is_callable($value_field)) {
