@@ -16,6 +16,9 @@ class Schema
     // Fields to be changed. Original field is the key
     private $change_fields = [];
 
+    // Fields to be eliminated.
+    private $drop_fields = [];
+
     // Indexes to be created
     private $create_indexes = [];
 
@@ -133,6 +136,11 @@ class Schema
         $this->field(...$args);
     }
 
+    public function dropField($field)
+    {
+        $this->drop_fields[] = $field;
+    }
+
     /**
      * Returns this schema table name
      */
@@ -174,6 +182,13 @@ class Schema
         return $this->change_fields;
     }
 
+    /**
+     * Retuns the 'drop' fields list, used for removing fields
+     */
+    public function getDropFields(): array
+    {
+        return $this->drop_fields;
+    }
     /**
      * Returns the indexes to be created
      */

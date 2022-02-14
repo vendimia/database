@@ -38,5 +38,16 @@ class Update implements ActionInterface
 
             $connection->execute($alter_table);
         }
+
+        // Ahora los campos que borramos
+        foreach ($schema->getDropFields() as $field_name) {
+            $alter_table = join(' ', [
+                'ALTER TABLE',
+                $connection->escapeIdentifier($schema->getTableName()),
+                "DROP",
+                $connection->escapeIdentifier($field_name),
+            ]);
+            $connection->execute($alter_table);
+        }
     }
 }
