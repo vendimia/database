@@ -394,10 +394,15 @@ abstract class Entity implements Stringable
      */
     public function save($disable_hooks = false, $fields = [])
     {
+        $extra_fields = null;
         // Antes de grabar, ejecutamos el callback self::$pre_save, si existe
         if (!$disable_hooks && isset(static::$pre_save)) {
             $method = static::$pre_save;
-            $this->$method();
+            $extra_fields = $this->$method();
+
+            if ($extra_fields && $fields) {
+                $fields = [...$fields, ...$extra_fields];
+            }
         }
 
         $payload = [];
