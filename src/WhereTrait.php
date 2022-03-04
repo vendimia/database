@@ -130,23 +130,22 @@ trait WhereTrait
         if ($is_associative) {
             $this->addFromArray($args);
         } else {
-            // Sólo verificamos el 1er elemento
-            if (is_array($args[0])) {
-                $this->addFromArrayList($args);
-            } else {
-                if (count($args) == 1) {
+            if (count($args) == 1) {
+                if (is_array($args[0])) {
+                    $this->addFromArrayList($args);
+                } else {
                     // Lo igualamos al PK. Doble array por ser array de arrays.
                     $this->addFromArrayList([[
                         ($this->target_class)::getPrimaryKeyField(),
                         $args[0]
                     ]]);
-                } else {
-                    // Los igualamos al PK con un IN. Doble array por ser array de arrays.
-                    $this->addFromArrayList([[
-                        ($this->target_class)::getPrimaryKeyField(),
-                        $args
-                    ]]);
                 }
+            } else {
+                // Los igualamos al PK con un IN. Doble array por ser array de arrays.
+                $this->addFromArrayList([[
+                    ($this->target_class)::getPrimaryKeyField(),
+                    $args
+                ]]);
             }
         }
 
