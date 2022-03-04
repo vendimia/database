@@ -401,6 +401,9 @@ abstract class Entity implements Stringable
             $extra_fields = $this->$method();
 
             if ($extra_fields && $fields) {
+                if (!is_array($extra_fields)) {
+                    throw new InvalidArgumentException("'pre_save' hook must return an array, or null.");
+                }
                 $fields = [...$fields, ...$extra_fields];
             }
         }
