@@ -113,7 +113,7 @@ trait WhereTrait
      * - if $args is an associative array, each [field => value] will be joined
      *   with an AND
      * - if $args is not an associative array:
-     *    - Array list:
+     *    - Array list (must be _only_ arrays in the list):
      *      - Same as [field, value]
      *    - Else
      *      - Match PK with an IN with all elements
