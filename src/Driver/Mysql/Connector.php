@@ -7,6 +7,7 @@ use Vendimia\Database\Driver\Result;
 use Vendimia\Database\Driver\ConnectorInterface;
 use Vendimia\Database\Driver\ConnectorAbstract;
 use Vendimia\Database\Migration\FieldDef;
+use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\DatabaseException;
 
 use InvalidArgumentException;
@@ -94,6 +95,9 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
                     return 'NULL';
                 }
                 return $value->pk();
+            }
+            if ($value instanceof FieldInterface) {
+                return $this->escapeIdentifier($value->getFieldName());
             }
             if ($value instanceof DatabaseValue) {
                 return $value->getDatabaseValue($this);
