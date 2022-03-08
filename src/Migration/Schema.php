@@ -42,8 +42,8 @@ class Schema
         ?array $values = null,
         bool $null = false,
         mixed $default = null,
-        bool $rename_from = null,
         bool $after = null,
+        ?string $rename_from = null,
         $action = 'add',
     )
     {
@@ -135,6 +135,16 @@ class Schema
         $args['action'] = 'change';
         $this->field(...$args);
     }
+
+    /**
+     * Changes the definition of a field
+     */
+    public function renameField($rename_from, ...$args) {
+        $args['rename_from'] = $rename_from;
+        $args['action'] = 'change';
+        $this->field(...$args);
+    }
+
 
     public function dropField($field)
     {

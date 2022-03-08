@@ -28,6 +28,12 @@ class Update implements ActionInterface
 
         // Ahora los cambios que requieren ser cambiados
         foreach ($schema->getChangeFields() as $field_name => $fielddef) {
+
+            // Si existe $fielddef::rename_from, lo usamos
+            if ($fielddef->rename_from ?? false) {
+                $field_name = $fielddef->rename_from;
+            }
+
             $alter_table = join(' ', [
                 'ALTER TABLE',
                 $connection->escapeIdentifier($schema->getTableName()),

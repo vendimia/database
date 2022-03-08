@@ -9,7 +9,12 @@ use Vendimia\DataContainer\DataContainer;
  */
 class FieldDef extends DataContainer
 {
+    /** Field name */
     public string $name;
+
+    /** Original field name, used for renaming */
+    public ?string $rename_from = null;
+
     public FieldType $type;
 
     /** Lenght for Char, FixChar and Decimal (precision) fields*/
