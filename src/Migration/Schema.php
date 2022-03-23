@@ -22,6 +22,9 @@ class Schema
     // Indexes to be created
     private $create_indexes = [];
 
+    // Indexes to be dropped
+    private $drop_indexes = [];
+
     private $primary_keys = [];
 
     public function __construct(
@@ -75,6 +78,18 @@ class Schema
     {
         // Convertimos FieldType en el nombre del tipo de la base de datos
         $this->create_indexes[] = Setup::$connector->buildIndexDef(
+            $this->table_name,
+            $field_names
+        );
+    }
+
+    /**
+     * Drops an index from a field
+     */
+    public function dropIndex(...$field_names)
+    {
+        // Convertimos FieldType en el nombre del tipo de la base de datos
+        $this->create_indexes[] = Setup::$connector->buildDropIndexDef(
             $this->table_name,
             $field_names
         );
@@ -199,6 +214,7 @@ class Schema
     {
         return $this->drop_fields;
     }
+
     /**
      * Returns the indexes to be created
      */
@@ -207,4 +223,11 @@ class Schema
         return $this->create_indexes;
     }
 
+    /**
+     * Returns the indexes to be dropped
+     */
+    public function getDropIndexes()
+    {
+        return $this->drop_indexes;
+    }
 }

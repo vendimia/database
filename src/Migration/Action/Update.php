@@ -55,5 +55,13 @@ class Update implements ActionInterface
             ]);
             $connection->execute($alter_table);
         }
+
+        // Ahora sus índices.
+        foreach ($schema->getCreateIndexes() as $create_index) {
+            $connection->execute($create_index);
+        }
+        foreach ($schema->getDropIndexes() as $drop_index) {
+            $connection->execute($drop_index);
+        }
     }
 }

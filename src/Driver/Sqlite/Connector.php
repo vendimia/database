@@ -207,8 +207,6 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return 1;
     }
 
-
-
     /**
      * Enum is emulated via a TEXT field with a CHECK constrain. Requieres a 'values' property.
      */
@@ -223,4 +221,21 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             $this->getNativeType($fielddef->type) . ' CHECK(' . $this->escapeIdentifier($fielddef->name) . ' IN (' . join(',', $this->escape($fielddef->values)) . '))',
         ];
     }
+
+    /**
+     * Builds a DROP INDEX statement
+     */
+    public function buildDropIndexDef(
+        string $table_name,
+        array $field_names,
+    ): string
+    {
+        $def = [
+            'DROP INDEX',
+            $this->escapeIdentifier('idx_' . join('_', $field_names)),
+        ];
+
+        return join(' ', $def);
+    }
+
 }

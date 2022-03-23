@@ -265,4 +265,22 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
             "INTEGER AUTO_INCREMENT"
         ];
     }
+
+    /**
+     * Builds a DROP INDEX statement
+     */
+    public function buildDropIndexDef(
+        string $table_name,
+        array $field_names,
+    ): string
+    {
+        $def = [
+            'DROP INDEX',
+            $this->escapeIdentifier('idx_' . join('_', $field_names)),
+            'ON',
+            $this->escapeIdentifier($table_name),
+        ];
+
+        return join(' ', $def);
+    }
 }
