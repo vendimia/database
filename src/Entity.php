@@ -111,6 +111,18 @@ abstract class Entity implements Stringable
     }
 
     /**
+     * Alias of getPrimaryKeyField()
+     */
+    public static function primaryKey(): Field\FieldAbstract
+    {
+        if (isset(static::$primary_key)) {
+            return static::F(static::$primary_key);
+        }
+
+        return static::F('id');
+    }
+
+    /**
      * Creates a Query which will return a Entity of this class
      */
     public static function get(...$where)
@@ -509,6 +521,13 @@ abstract class Entity implements Stringable
      */
     public function delete()
     {
+        // Ejecutamos el método onDelete() de los campos que lo tengan
+        foreach ($this->getFieldList() as $field) {
+            if (method_exists($field, 'onDelete')) {
+                //$field->onDelete(self::$on_delete ?? OnDelete::NOTHING);
+            }
+        }
+
         $pk_field = static::getPrimaryKeyField()->getFieldName();
         Setup::$connector->delete(
             static::getTableName(),
