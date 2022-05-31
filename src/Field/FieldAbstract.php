@@ -116,6 +116,11 @@ abstract class FieldAbstract implements FieldInterface
         return $this;
     }
 
+    public function getEntity(): Entity
+    {
+        return $this->entity;
+    }
+
     /**
      * Returns an array with [table, field_name]
      */
