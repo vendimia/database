@@ -10,9 +10,11 @@ use Vendimia\Database\Migration\FieldDef;
 use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\DatabaseException;
 
-use SQLite3;
 use InvalidArgumentException;
+use Exception;
 use RuntimeException;
+use SQLite3;
+use Stringable;
 
 class Connector extends ConnectorAbstract implements ConnectorInterface
 {
