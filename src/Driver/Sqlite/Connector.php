@@ -190,8 +190,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
         $result = $this->execute($sql);
 
-        // Al parecer, PHP no soporta sqlite_changes()
-        return 1;
+        return $this->db->changes();
     }
 
     /**
@@ -206,7 +205,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
         $result = $this->execute($sql);
 
-        return 1;
+        return $this->db->changes();
     }
 
     /**
