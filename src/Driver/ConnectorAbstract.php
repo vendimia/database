@@ -10,6 +10,8 @@ use InvalidArgumentException;
  */
 abstract class ConnectorAbstract
 {
+    protected $db;
+
     /**
      * Prepares a SQL INSERT statement
      */

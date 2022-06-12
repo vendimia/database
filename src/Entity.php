@@ -7,10 +7,20 @@ use ReflectionException;
 use ReflectionAttribute;
 use ReflectionProperty;
 use InvalidArgumentException;
+use RuntimeException;
 use Stringable;
 
 abstract class Entity implements Stringable
 {
+    /**
+     * This field name will be treated special, as it will be the implicit
+     * default primary key.
+     */
+    protected const IMPLICIT_PRIMARY_KEY_FIELD = 'id';
+
+    /** Value for the implicit primary key */
+    protected $implicit_primary_key_value;
+
     /** True if the query which generate this Entity returned no data */
     protected $is_empty = true;
 
@@ -99,19 +109,15 @@ abstract class Entity implements Stringable
     }
 
     /**
-     * Returns the primary key Field object
+     * Alias of primaryKey()
      */
     public static function getPrimaryKeyField(): Field\FieldAbstract
     {
-        if (isset(static::$primary_key)) {
-            return static::F(static::$primary_key);
-        }
-
-        return static::F('id');
+        return static::primaryKey();
     }
 
     /**
-     * Alias of getPrimaryKeyField()
+     * Returns the primary key field, or creates a new one if it's implicit.
      */
     public static function primaryKey(): Field\FieldAbstract
     {
@@ -119,7 +125,15 @@ abstract class Entity implements Stringable
             return static::F(static::$primary_key);
         }
 
-        return static::F('id');
+        // Si no hay una llave primaria explícita, creamos una
+        return new Field\AutoIncrement(
+            name: self::IMPLICIT_PRIMARY_KEY_FIELD,
+            entity_class: static::class,
+            args: [
+                'auto_increment' => true,
+                'primary_key' => true,
+            ],
+        );
     }
 
     /**
@@ -137,8 +151,6 @@ abstract class Entity implements Stringable
     {
         return (new Query(static::class, $where))->get(lazy: true);
     }
-
-
 
     /**
      * Creates a Query which will return a EntitySet of this class
@@ -173,19 +185,11 @@ abstract class Entity implements Stringable
         try {
             $ref_property = (new ReflectionClass($class))->getProperty($field);
         } catch (ReflectionException) {
-            // Esto es _casi_ un hack: Si piden 'id', y no existe, creamos un field
-            if ($field == 'id' && !isset(static::$primary_key)) {
-                // Craemos un objeto
-                return new Field\AutoIncrement(
-                    name: 'id',
-                    entity_class: static::class,
-                    args: [
-                        'auto_increment' => true,
-                        'primary_key' => true,
-                    ],
-                );
+            // Si pedimos la llave primaria implícita, usamos el método primaryKey()
+            if (!isset(static::$primary_key) && ($field == self::IMPLICIT_PRIMARY_KEY_FIELD)) {
+                return static::primaryKey();
             }
-            throw new InvalidArgumentException("Field '{$field}' not found in entity {$class}");
+            throw new RuntimeException("Undefined field '{$field}' in entity {$class}");
         }
 
         // Sólo debería haber _un_ atributo Field
@@ -245,8 +249,8 @@ abstract class Entity implements Stringable
 
         // Si no hay una llave primaria definida, creamos una llamada 'id'
         if (!isset(static::$primary_key)) {
-            $fields = ['id' => new Field\AutoIncrement(
-                name: 'id',
+            $fields = [self::IMPLICIT_PRIMARY_KEY_FIELD => new Field\AutoIncrement(
+                name: self::IMPLICIT_PRIMARY_KEY_FIELD,
                 entity_class: static::class,
                 args: [
                     'auto_increment' =>  true,
@@ -293,11 +297,23 @@ abstract class Entity implements Stringable
     }
 
     /**
-     * Returns the primary key value
+     * Returns or sets the primary key value
      */
-    public function pk()
+    public function pk($value = null)
     {
-        return $this->{$this::getPrimaryKeyField()->getName()} ?? null;
+        if ($value) {
+            if (isset(static::$primary_key)) {
+                $this->{static::$primary_key} = $value;
+            } else {
+                $this->implicit_primary_key_value = $value;
+            }
+        } else {
+            if (isset(static::$primary_key)) {
+                return $this->{static::$primary_key};
+            } else {
+                return $this->implicit_primary_key_value;
+            }
+        }
     }
 
     /**
@@ -342,6 +358,13 @@ abstract class Entity implements Stringable
                 // FIXME: Ignoramos los campos que no existen?
                 continue;
             }
+
+            // Si el campo es la llave primaria implícita, usamos otro método
+            if ($key == self::IMPLICIT_PRIMARY_KEY_FIELD) {
+                $this->pk($fields[$key]->processDatabaseValue($value));
+                continue;
+            }
+
             $this->{$fields[$key]->getName()}
                 = $fields[$key]->processDatabaseValue($value);
         }
@@ -577,5 +600,28 @@ abstract class Entity implements Stringable
     public function __debugInfo()
     {
         return $this->asArray();
+    }
+
+    public function __get($field)
+    {
+        if (!isset(static::$primary_key)
+            && ($field == self::IMPLICIT_PRIMARY_KEY_FIELD)) {
+            return $this->implicit_primary_key_value;
+        }
+
+        $class = $this::class;
+        throw new RuntimeException("Trying to set undefined field '{$field}' in entity {$class}");
+    }
+
+    public function __set($field, $value)
+    {
+        if (!isset(static::$primary_key)
+            && ($field == self::IMPLICIT_PRIMARY_KEY_FIELD)) {
+            $this->implicit_primary_key_value = $value;
+            return;
+        }
+
+        $class = $this::class;
+        throw new RuntimeException("Trying to retrieve undefined field '{$field}' in entity {$class}");
     }
 }
