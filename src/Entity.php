@@ -461,8 +461,10 @@ abstract class Entity implements Stringable
                 $post_proc_fields[$field->getName()] = $field;
             }
 
-            // Ignoramos los Fields que no tengan una propiedad en el objeto.
-            if (!property_exists($this, $field->getName())) {
+            // Ignoramos los Fields que no tengan una propiedad en el objeto,
+            // excepto la llave privada implícita
+            if ($field->getName() != self::IMPLICIT_PRIMARY_KEY_FIELD
+                && !property_exists($this, $field->getName())) {
                 continue;
             }
             $value = $this->{$field->getName()};
