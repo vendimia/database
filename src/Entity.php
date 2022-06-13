@@ -227,6 +227,18 @@ abstract class Entity implements Stringable
             ReflectionProperty::IS_PUBLIC
         );
 
+        // Si no hay una llave primaria definida, creamos una llamada 'id'
+        if (!isset(static::$primary_key)) {
+            $fields[self::IMPLICIT_PRIMARY_KEY_FIELD] = new Field\AutoIncrement(
+                name: self::IMPLICIT_PRIMARY_KEY_FIELD,
+                entity_class: static::class,
+                args: [
+                    'auto_increment' =>  true,
+                    'primary_key' => true,
+                ]
+            );
+        }
+
         foreach ($ref_properties as $rp) {
             $attr = $rp->getAttributes(
                 Field\FieldAbstract::class,
@@ -246,19 +258,6 @@ abstract class Entity implements Stringable
                 args: $attr->getArguments(),
             );
         }
-
-        // Si no hay una llave primaria definida, creamos una llamada 'id'
-        if (!isset(static::$primary_key)) {
-            $fields = [self::IMPLICIT_PRIMARY_KEY_FIELD => new Field\AutoIncrement(
-                name: self::IMPLICIT_PRIMARY_KEY_FIELD,
-                entity_class: static::class,
-                args: [
-                    'auto_increment' =>  true,
-                    'primary_key' => true,
-                ]
-            )] + $fields;
-        }
-
 
         return $fields;
     }
