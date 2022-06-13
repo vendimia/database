@@ -117,6 +117,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
      */
     public function execute(string $query): Result
     {
+        $this->last_sql = $query;
         try {
             $result = $this->db->query($query);
         } catch (Exception $e) {

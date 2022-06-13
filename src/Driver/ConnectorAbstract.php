@@ -12,6 +12,17 @@ abstract class ConnectorAbstract
 {
     protected $db;
 
+    /** Last SQL command executed */
+    protected $last_sql;
+
+    /**
+     * Returns the last SQL command executed
+     */
+    public function getLastSQL()
+    {
+        return $this->last_sql;
+    }
+
     /**
      * Prepares a SQL INSERT statement
      */
