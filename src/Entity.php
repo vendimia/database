@@ -130,8 +130,7 @@ abstract class Entity implements Stringable
             name: self::IMPLICIT_PRIMARY_KEY_FIELD,
             entity_class: static::class,
             args: [
-                'auto_increment' => true,
-                'primary_key' => true,
+                'null' => true,
             ],
         );
     }
@@ -229,14 +228,7 @@ abstract class Entity implements Stringable
 
         // Si no hay una llave primaria definida, creamos una llamada 'id'
         if (!isset(static::$primary_key)) {
-            $fields[self::IMPLICIT_PRIMARY_KEY_FIELD] = new Field\AutoIncrement(
-                name: self::IMPLICIT_PRIMARY_KEY_FIELD,
-                entity_class: static::class,
-                args: [
-                    'auto_increment' =>  true,
-                    'primary_key' => true,
-                ]
-            );
+            $fields[self::IMPLICIT_PRIMARY_KEY_FIELD] = static::primaryKey();
         }
 
         foreach ($ref_properties as $rp) {
@@ -501,7 +493,7 @@ abstract class Entity implements Stringable
             );
         }
 
-        $this->$pk_field = $pk_value;
+        $this->pk($pk_value);
 
         foreach ($post_proc_fields as $field){
             $field->postProc();
