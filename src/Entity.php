@@ -595,6 +595,22 @@ abstract class Entity implements Stringable
         return $this->asArray();
     }
 
+    /**
+     * Magic method to aid null coalescing operator on nonexistent properties
+     */
+    public function __isset($field)
+    {
+        if (!isset(static::$primary_key)
+            && ($field == self::IMPLICIT_PRIMARY_KEY_FIELD)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Magic method to get implicit primary key field value.
+     */
     public function __get($field)
     {
         if (!isset(static::$primary_key)
@@ -603,9 +619,12 @@ abstract class Entity implements Stringable
         }
 
         $class = $this::class;
-        throw new RuntimeException("Trying to set undefined field '{$field}' in entity {$class}");
+        throw new RuntimeException("Trying to get undefined field '{$field}' in entity {$class}");
     }
 
+    /**
+     * Magic method to set implicit primary key field value.
+     */
     public function __set($field, $value)
     {
         if (!isset(static::$primary_key)
@@ -615,6 +634,6 @@ abstract class Entity implements Stringable
         }
 
         $class = $this::class;
-        throw new RuntimeException("Trying to retrieve undefined field '{$field}' in entity {$class}");
+        throw new RuntimeException("Trying to set undefined field '{$field}' in entity {$class}");
     }
 }
