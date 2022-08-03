@@ -62,42 +62,9 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         };
     }
 
-    public function escape(mixed $value, string $quote_char = '\''): string|array
+    public function nativeEscapeString(string $string): string
     {
-        // Ya que los numeros /también/ son strings, procesamos is_numeric
-        // primero
-        if (is_array($value)) {
-            return array_map(
-                fn($value) => $this->escape($value, $quote_char),
-                $value
-            );
-        } elseif (is_numeric($value)) {
-            // Los números no requieren quotes
-            return $value;
-        } elseif (is_string($value) || $value instanceof Stringable) {
-            return $quote_char
-                . $this->db->escapeString((string)$value)
-                . $quote_char;
-        } elseif (is_null($value)) {
-            return 'NULL';
-        } elseif (is_bool($value)) {
-            return $value ? '1' : '0';
-        } elseif (is_object($value)) {
-            if ($value instanceof Entity) {
-                if ($value->isEmpty()) {
-                    return 'NULL';
-                }
-                return $value->pk();
-            }
-            if ($value instanceof FieldInterface) {
-                return $this->escapeIdentifier($value->getFieldName());
-            }
-            if ($value instanceof DatabaseValue) {
-                return $value->getDatabaseValue($this);
-            }
-        }
-
-        throw new InvalidArgumentException('Can\'t escape a value of type "' . gettype($value) . '".');
+        return $this->db->escapeString($value);
     }
 
     public function escapeIdentifier(string|array $identifier): string|array

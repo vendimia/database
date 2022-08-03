@@ -17,7 +17,7 @@ interface ConnectorInterface
     public function getNativeType(FieldType $type): string;
 
     /**
-     * Converts and escape one o more PHP values, adding quotes if necessary.
+     * Escapes and/or convert several PHP values to valid database values
      */
     public function escape(mixed $value, string $quote_char): string|array;
 
@@ -25,6 +25,11 @@ interface ConnectorInterface
      * Escapes one or more identifiers, like a table name
      */
     public function escapeIdentifier(string|array $identifier): string|array;
+
+    /**
+     * Wrapper over the native connector escape method
+     */
+    public function nativeEscapeString(string $value): string;
 
     /**
      * Executes a SQL query

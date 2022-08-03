@@ -2,8 +2,11 @@
 namespace Vendimia\Database\Driver;
 
 use Vendimia\Database\FieldType;
+use Vendimia\Database\Entity;
+use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\Migration\FieldDef;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Common methods for ConnectorInterface implementation
@@ -22,6 +25,60 @@ abstract class ConnectorAbstract
     {
         return $this->last_sql;
     }
+
+    public function escape(mixed $value, string $quote_char = '\''): string|array
+    {
+        if (is_object($value)) {
+            if ($value instanceof Entity) {
+                if ($value->isEmpty()) {
+                    return 'NULL';
+                }
+                return $value->pk();
+            }
+            if ($value instanceof FieldInterface) {
+                return $this->escapeIdentifier($value->getFieldName());
+            }
+
+            // TODO: Aun no existe DatabaseValue
+            if ($value instanceof DatabaseValue) {
+                return $value->getDatabaseValue($this);
+            }
+
+            if ($value instanceof Stringable) {
+                return $quote_char
+                . $this->nativeEscapeString((string)$value)
+                . $quote_char;
+            }
+        } elseif (is_array($value)) {
+            return array_map(
+                fn($value) => $this->escape($value, $quote_char),
+                $value
+            );
+        } elseif (is_numeric($value)) {
+            // Ya que los numeros /también/ son strings, procesamos is_numeric
+            // primero
+
+            // Los números no requieren quotes
+            return $value;
+        } elseif (is_string($value)) {
+            return $quote_char
+                . $this->nativeEscapeString((string)$value)
+                . $quote_char;
+        } elseif (is_null($value)) {
+            return 'NULL';
+        } elseif (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        $object_type = gettype($value);
+
+        if ($object_type == 'object') {
+            $object_type .= ":" . $value::class;
+        }
+
+        throw new InvalidArgumentException("Can't escape a value of type '{$object_type}'.");
+    }
+
 
     /**
      * Prepares a SQL INSERT statement
@@ -153,10 +210,12 @@ abstract class ConnectorAbstract
             $def[] = "UNIQUE";
         }
 
+        $index_name = join('_', ['idx', $table_name, ...$field_names]);
+
         $def = [
             ...$def,
             'INDEX',
-            $this->escapeIdentifier('idx_' . join('_', $field_names)),
+            $this->escapeIdentifier($index_name),
             'ON',
             $this->escapeIdentifier($table_name),
             '(' . join(',', $this->escapeIdentifier($field_names)) . ')'
