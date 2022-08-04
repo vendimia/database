@@ -62,7 +62,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         };
     }
 
-    public function nativeEscapeString(string $string): string
+    public function nativeEscapeString(string $value): string
     {
         return $this->db->escapeString($value);
     }
