@@ -176,6 +176,14 @@ abstract class Entity implements Stringable
     }
 
     /**
+     * Alias of query()
+     */
+    public static function where(...$where)
+    {
+        return new Query(static::class, $where);
+    }
+
+    /**
      * Returns a Field object
      */
     public static function F($field): Field\FieldAbstract
@@ -313,6 +321,18 @@ abstract class Entity implements Stringable
     public function fromDatabase($data): self
     {
         $this->database_data = $data;
+
+        // Precargamos la llave primaria
+        if (isset(static::$primary_key)) {
+            if (key_exists(static::$primary_key, $data)) {
+                $this->{static::$primary_key} = $data[static::$primary_key];
+            }
+        } else {
+            if (key_exists(self::IMPLICIT_PRIMARY_KEY_FIELD, $data)) {
+                $this->implicit_primary_key_value = $data[self::IMPLICIT_PRIMARY_KEY_FIELD];
+            }
+        }
+
         return $this;
     }
 
