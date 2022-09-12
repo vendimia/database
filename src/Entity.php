@@ -42,7 +42,7 @@ abstract class Entity implements Stringable
      */
     protected static function buildTableName()
     {
-        return join('_', array_filter(explode('\\', strtolower(get_called_class())),
+        return join('_', array_filter(explode('\\', mb_strtolower(get_called_class())),
             fn($e) => $e != 'database'
         ));
     }
