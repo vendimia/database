@@ -30,6 +30,9 @@ abstract class FieldAbstract implements FieldInterface
 
         // Database field for this entity. Default is this entity name.
         'database_field' => null,
+
+        /** Methods in this entity for processing values from and to the database, in the form of [from_method, to_method] */
+        'value_processing_methods' => null,
     ];
 
     public function __construct(
@@ -137,6 +140,12 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function processPHPValue($value)
     {
+        if ($method = $this->properties['value_processing_methods'][1] ?? null) {
+            if (method_exists($this->entity, $method)) {
+                $value = $this->entity->$method($value);
+            }
+        }
+
         if (is_null($value) && key_exists('default', $this->properties)) {
             $value = $this->properties['default'];
         }
@@ -153,8 +162,10 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function processDatabaseValue($value)
     {
-        if ($class = $this->properties['class_value']) {
-            return new $class($value);
+        if ($method = $this->properties['value_processing_methods'][0] ?? null) {
+            if (method_exists($this->entity, $method)) {
+                return $this->entity->$method($value);
+            }
         }
 
         return $value;
