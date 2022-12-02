@@ -1,4 +1,5 @@
 <?php
+
 namespace Vendimia\Database\Driver\Sqlite;
 
 use Vendimia\Database\Entity;
@@ -62,9 +63,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         };
     }
 
-    public function nativeEscapeString(string $value): string
+    public function nativeEscapeString(string $value, bool $quoted = false): string
     {
-        return $this->db->escapeString($value);
+        $quote_char = '';
+        if ($quoted) {
+            $quote_char = '\'';
+        }
+
+        return $quote_char . $this->db->escapeString($value) . $quote_char;
     }
 
     public function escapeIdentifier(string|array $identifier): string|array

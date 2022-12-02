@@ -1,4 +1,5 @@
 <?php
+
 namespace Vendimia\Database;
 
 use Vendimia\Database\Driver\ConnectorInterface;
@@ -18,5 +19,10 @@ class Setup
     public static function init(ConnectorInterface $connector)
     {
         static::$connector = $connector;
+    }
+
+    public static function getConnector(): ConnectorInterface
+    {
+        return self::$connector;
     }
 }

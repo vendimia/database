@@ -1,8 +1,10 @@
 <?php
+
 namespace Vendimia\Database\Driver;
 
 use Vendimia\Database\FieldType;
 use Vendimia\Database\Entity;
+use Vendimia\Database\DatabaseReadyValue;
 use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\Migration\FieldDef;
 use InvalidArgumentException;
@@ -26,9 +28,16 @@ abstract class ConnectorAbstract
         return $this->last_sql;
     }
 
+    /**
+     * Converts and escapes a value from a number of types to a database-ready
+     * value
+     */
     public function escape(mixed $value, string $quote_char = '\''): string|array
     {
         if (is_object($value)) {
+            if ($value instanceof DatabaseReadyValue) {
+                return $value->getValue();
+            }
             if ($value instanceof Entity) {
                 if ($value->isEmpty()) {
                     return 'NULL';

@@ -1,4 +1,5 @@
 <?php
+
 namespace Vendimia\Database\Driver;
 
 use Vendimia\Database\Migration\FieldDef;
@@ -29,7 +30,7 @@ interface ConnectorInterface
     /**
      * Wrapper over the native connector escape method
      */
-    public function nativeEscapeString(string $value): string;
+    public function nativeEscapeString(string $value, bool $quoted = false): string;
 
     /**
      * Executes a SQL query
