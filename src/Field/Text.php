@@ -2,9 +2,10 @@
 
 namespace Vendimia\Database\Field;
 
+use Vendimia\Database\{FieldType, Setup, DatabaseReadyValue};
+
 use Attribute;
 use InvalidArgumentException;
-use Vendimia\Database\FieldType;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Text extends FieldAbstract

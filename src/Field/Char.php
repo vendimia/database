@@ -2,9 +2,7 @@
 
 namespace Vendimia\Database\Field;
 
-use Vendimia\Database\Setup;
-use Vendimia\Database\FieldType;
-use Vendimia\Database\DatabaseReadyValue;
+use Vendimia\Database\{FieldType, Setup, DatabaseReadyValue};
 
 use Attribute;
 use InvalidArgumentException;
