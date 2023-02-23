@@ -54,7 +54,7 @@ class EntitySet implements Iterator
                 ];
             }
 
-            $query = new Query($this->target_class, $nc);
+            $this->query = $query = new Query($this->target_class, $nc);
         }
 
         $this->result = Setup::$connector->execute($query->getSQL());
@@ -186,6 +186,15 @@ class EntitySet implements Iterator
             $this->target_class::getTableName(),
             $where
         );
+    }
+
+    /**
+     * Returns a copy of the query
+     */
+    public function getQuery(): Query
+    {
+        $this->load();
+        return clone $this->query;
     }
 
     public function current(): mixed
