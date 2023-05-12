@@ -605,6 +605,14 @@ abstract class Entity implements Stringable
         return $result;
     }
 
+    /**
+     * Return the group count from Query::groupCount()
+     */
+    public function getGroupCount(): ?int
+    {
+        return $this->database_data['__GROUPCOUNTING'] ?? null;
+    }
+
     public function __toString()
     {
         return (string)$this->pk();

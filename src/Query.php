@@ -20,6 +20,7 @@ class Query
     private array $joins = [];
     private ?string $limit = null;
     private string $order = '';
+    private array $group = [];
 
     public function __construct(
         private string $target_class,
@@ -109,7 +110,6 @@ class Query
         $sql = $this->getSQL();
         return Setup::$connector->execute($sql);
     }
-
 
     /**
      * Returns an EntitySet
@@ -231,6 +231,16 @@ class Query
         return intval($data['__SUM']);
     }
 
+    /**
+     * Adds a COUNT and GROUP BY to the query
+     */
+    public function groupCount(...$fields)
+    {
+        $this->fields[] = "COUNT(*) as __GROUPCOUNTING";
+        $this->group = Setup::$connector->escapeIdentifier($fields);
+
+        return $this;
+    }
 
     /**
      * Creates the actual SQL
@@ -251,6 +261,10 @@ class Query
 
         if ($where = $this->getSQLWhereString()) {
             $sql[] = 'WHERE ' . $where;
+        }
+
+        if ($this->group) {
+            $sql[] = 'GROUP BY ' . join(',', $this->group);
         }
 
         if ($this->order) {
