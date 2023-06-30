@@ -58,13 +58,17 @@ abstract class ConnectorAbstract
                 . $this->nativeEscapeString((string)$value)
                 . $quote_char;
             }
+        } elseif (is_null($value)) {
+            return 'NULL';
+        } elseif (is_bool($value)) {
+            return $value ? '1' : '0';
         } elseif (is_array($value)) {
             return array_map(
                 fn($value) => $this->escape($value, $quote_char),
                 $value
             );
         } elseif (preg_match('/^[-+]?\d*(\.\d+)?$/', $value) === 1) {
-            // Ya que los numeros /también/ son strings, procesamos is_numeric
+            // Ya que los numeros /también/ son strings, procesamos los números
             // primero
 
             // Los números no requieren quotes
@@ -73,10 +77,6 @@ abstract class ConnectorAbstract
             return $quote_char
                 . $this->nativeEscapeString((string)$value)
                 . $quote_char;
-        } elseif (is_null($value)) {
-            return 'NULL';
-        } elseif (is_bool($value)) {
-            return $value ? '1' : '0';
         }
 
         $object_type = gettype($value);
