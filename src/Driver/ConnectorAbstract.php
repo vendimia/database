@@ -67,7 +67,7 @@ abstract class ConnectorAbstract
                 fn($value) => $this->escape($value, $quote_char),
                 $value
             );
-        } elseif (preg_match('/^[-+]?\d*(\.\d+)?$/', $value) === 1) {
+        } elseif ($value != '' && preg_match('/^[-+]?\d*(\.\d+)?$/', $value) === 1) {
             // Ya que los numeros /también/ son strings, procesamos los números
             // primero
 
