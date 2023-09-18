@@ -2,8 +2,8 @@
 namespace Vendimia\Database\Field;
 
 use Attribute;
-use InvalidArgumentException;
-use Vendimia\Database\FieldType;
+use DomainException;
+
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Decimal extends FieldAbstract
@@ -18,11 +18,11 @@ class Decimal extends FieldAbstract
         parent::__construct(...$args);
 
         if (!$this->properties['length']) {
-            throw new InvalidArgumentException("Field '{$this->name}' of type 'Decimal' requires a length (precision)");
+            throw new DomainException("Field '{$this->name}' of type 'Decimal' requires a length (precision)");
         }
 
         if (!$this->properties['decimal']) {
-            throw new InvalidArgumentException("Field '{$this->name}' of type 'Decimal' requires the decimal count (scale)");
+            throw new DomainException("Field '{$this->name}' of type 'Decimal' requires the decimal count (scale)");
         }
     }
 
@@ -31,7 +31,7 @@ class Decimal extends FieldAbstract
         $value = parent::processPHPValue($value);
 
         if (!is_numeric($value) && !is_null($value)) {
-            throw new InvalidArgumentException("Value for field '{$this->name}' must be numeric");
+            throw new DomainException("Value for field '{$this->name}' must be numeric");
         }
 
         return is_null($value) ? null : floatval($value);
