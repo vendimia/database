@@ -1,6 +1,10 @@
 <?php
 namespace Vendimia\Database\Field;
 
+use Vendimia\Database\{
+    FieldType,
+    DatabaseReadyValue
+};
 use Attribute;
 use DomainException;
 
@@ -34,7 +38,11 @@ class Decimal extends FieldAbstract
             throw new DomainException("Value for field '{$this->name}' must be numeric");
         }
 
-        return is_null($value) ? null : floatval($value);
+        // Retornamos el valor como float, y evitamos que sea luego automáticamente
+        // escapado (para permitir cosas como 'e')
+        return is_null($value) ? null : new DatabaseReadyValue(
+            floatval($value)
+        );
     }
 
     public function processDatabaseValue($value)
@@ -46,7 +54,6 @@ class Decimal extends FieldAbstract
             return $value;
         }
 
-        // Retornamos el valor como float
         return floatval($value);
     }
 }
