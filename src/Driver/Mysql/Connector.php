@@ -211,7 +211,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 
         return [
             $this->escapeIdentifier($fielddef->name),
-            $this->getNativeType($fielddef->type) . '(' . join(',', $this->escape($fielddef->values)) . ')',
+            $this->getNativeType($fielddef->type) . '(' . join(',', $this->escape($fielddef->values, force_quote_numbers: true)) . ')',
         ];
     }
 

@@ -32,7 +32,11 @@ abstract class ConnectorAbstract
      * Converts and escapes a value from a number of types to a database-ready
      * value
      */
-    public function escape(mixed $value, string $quote_char = '\''): string|array
+    public function escape(
+        mixed $value,
+        string $quote_char = '\'',
+        bool $force_quote_numbers = false
+    ): string|array
     {
         if (is_object($value)) {
             if ($value instanceof DatabaseReadyValue) {
@@ -64,12 +68,18 @@ abstract class ConnectorAbstract
             return $value ? '1' : '0';
         } elseif (is_array($value)) {
             return array_map(
-                fn($value) => $this->escape($value, $quote_char),
+                fn($value) => $this->escape($value, $quote_char, $force_quote_numbers),
                 $value
             );
         } elseif ($value != '' && preg_match('/^[-+]?\d*(\.\d+)?$/', $value) === 1) {
             // Ya que los numeros /también/ son strings, procesamos los números
             // primero
+
+            if ($force_quote_numbers) {
+                return $quote_char
+                . $value
+                . $quote_char;
+            }
 
             // Los números no requieren quotes
             return $value;
@@ -87,8 +97,6 @@ abstract class ConnectorAbstract
 
         throw new InvalidArgumentException("Can't escape a value of type '{$object_type}'.");
     }
-
-
     /**
      * Prepares a SQL INSERT statement
      */
