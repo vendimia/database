@@ -65,6 +65,17 @@ class EntitySet implements Iterator
     }
 
     /**
+     * Returns the row count from the result
+     */
+    public function count()
+    {
+        if (!$this->is_loaded) {
+            $this->load();
+        }
+        return $this->result->count();
+    }
+
+    /**
      * Retrieves a record from the database, returns an Entity
      */
     public function fetch(): ?Entity

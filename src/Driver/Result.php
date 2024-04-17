@@ -13,6 +13,11 @@ class Result
 
     }
 
+    public function count()
+    {
+        return $this->connector->resultCount($this->result);
+    }
+
     /**
      * @see ConnectorInterface::fetch()
      */

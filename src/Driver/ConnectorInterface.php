@@ -38,6 +38,13 @@ interface ConnectorInterface
     public function execute(string $query): Result;
 
     /**
+     * Returns the row count from a result when possible.
+     *
+     * Some drivers returns a string when the count is greater than PHP_INT_MAX
+     */
+    public function resultCount($result): int|string;
+
+    /**
      * Fetchs a column from a query result, or null if there are no more.
      */
     public function fetch($result): ?array;

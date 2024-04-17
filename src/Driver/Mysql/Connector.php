@@ -105,6 +105,11 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return new Result($this, $result);
     }
 
+    public function resultCount($result): int|string
+    {
+        return $result->num_rows;
+    }
+
     public function fetch($result): ?array
     {
         $row = $result->fetch_assoc();

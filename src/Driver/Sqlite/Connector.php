@@ -104,6 +104,12 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return new Result($this, $result);
     }
 
+    public function resultCount($result): int|string
+    {
+        // sqlite3 no implementa esta función
+        return 0;
+    }
+
     public function fetch($result): ?array
     {
         $row = $result->fetchArray(SQLITE3_ASSOC);
