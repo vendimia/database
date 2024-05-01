@@ -96,11 +96,22 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         try {
             $result = $this->db->query($query);
         } catch (Exception $e) {
-            throw new DatabaseException("Error executing query: " . $query, previous: $e);
+            throw new DatabaseException(
+                "Error executing query: ". $e->getMessage(),
+                previous: $e,
+                extra: [
+                    'query' => $query
+                ]
+            );
         }
 
         if ($result === false) {
-            throw new DatabaseException($this->db->error);
+            throw new DatabaseException(
+                "Error executing query: ". $this->db->error,
+                extra: [
+                    'query' => $query
+                ]
+            );
         }
         return new Result($this, $result);
     }
