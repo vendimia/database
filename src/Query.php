@@ -67,7 +67,7 @@ class Query
     /**
      * Adds a LIMIT SQL clausule
      */
-    public function limit(int $limit, int $offset = null):self
+    public function limit(int $limit, ?int $offset = null): self
     {
         $this->limit = $limit;
 

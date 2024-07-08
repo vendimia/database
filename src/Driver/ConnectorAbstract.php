@@ -122,7 +122,7 @@ abstract class ConnectorAbstract
     protected function prepareUpdate(
         string $table,
         array $payload,
-        string $where = null
+        ?string $where = null
     ): string
     {
         $values = [];

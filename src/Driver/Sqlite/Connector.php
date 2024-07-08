@@ -165,7 +165,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     /**
      * Executes a SQL UPDATE. Returns the number of records affected.
      */
-    public function update(string $table, array $payload, string $where = null): int
+    public function update(string $table, array $payload, ?string $where = null): int
     {
         $values = [];
         foreach ($payload as $field => $value) {

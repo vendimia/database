@@ -102,8 +102,8 @@ class EntitySet implements Iterator
      * Otherwise it will be that field's value.
      */
     public function asArray(
-        Callable|string $value_field = null,
-        Callable|string $index_field = null
+        Callable|string|null $value_field = null,
+        Callable|string|null $index_field = null
     ): array
     {
         $return = [];

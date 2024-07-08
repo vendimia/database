@@ -45,7 +45,7 @@ class Schema
         ?array $values = null,
         bool $null = false,
         mixed $default = null,
-        bool $after = null,
+        ?bool $after = null,
         ?string $rename_from = null,
         $action = 'add',
     )

@@ -160,7 +160,7 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
     public function update(
         string $table,
         array $payload,
-        string $where = null
+        ?string $where = null
     ): int
     {
         $sql = $this->prepareUpdate($table, $payload, $where);
