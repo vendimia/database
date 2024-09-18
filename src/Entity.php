@@ -664,4 +664,17 @@ abstract class Entity implements Stringable
         $class = $this::class;
         throw new RuntimeException("Trying to set undefined field '{$field}' in entity {$class}");
     }
+
+    public function __clone(): void
+    {
+        // Reseteamos la llave primaria
+        if (isset(static::$primary_key)) {
+            $this->{static::$primary_key} = null;
+        } else {
+            $this->implicit_primary_key_value = null;
+        }
+
+        // El objeto se convierte en nuevo
+        $this->is_new = true;
+}
 }
