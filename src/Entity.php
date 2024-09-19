@@ -1,4 +1,5 @@
 <?php
+
 namespace Vendimia\Database;
 
 use ReflectionClass;
@@ -459,31 +460,50 @@ abstract class Entity implements Stringable
 
         $pk_field = static::getPrimaryKeyField()->getFieldName();
 
-        $field_list = $this->getFieldList();
+        $complete_field_list = $this->getFieldList();
 
         if ($fields) {
-            $field_list = array_intersect_key($field_list, array_flip($fields));
+            $field_list = array_intersect_key($complete_field_list, array_flip($fields));
+        } else {
+            $field_list = $complete_field_list;
         }
 
         foreach ($field_list as $field) {
             $field->setEntity($this);
 
+            // Nombre de la propiedad de la clase
+            $property_name = $field->getName();
+
             // Si este field requiere post-proceso, lo guardamos en otro listado
             if ($field->requirePostProc()) {
-                $post_proc_fields[$field->getName()] = $field;
+                $post_proc_fields[$property_name] = $field;
             }
 
-            // Ignoramos los Fields que no tengan una propiedad en el objeto,
-            // excepto la llave privada implícita
-            if ($field->getName() != self::IMPLICIT_PRIMARY_KEY_FIELD
-                && !property_exists($this, $field->getName())) {
-                continue;
+            $value = null;;
+
+            // El Field para el PK implícito no existe como propiedad en este
+            // objeto, asi que lo ignoremos
+            if ($property_name != self::IMPLICIT_PRIMARY_KEY_FIELD) {
+                // Si la propiedad no existe en el objeto, también lo ignoramos
+                if (!property_exists($this, $property_name)) {
+                    continue;
+                }
+
+                // Verificamos si la propiedad ha sido inicializada, en caso
+                // tenga un tipo
+                $rp = new ReflectionProperty($this, $property_name);
+                if ($rp->isInitialized($this)) {
+                    // Si tiene un valor, lo usamos
+                    $value = $this->$property_name;
+                } else {
+                    // No tiene un valor, usamos su propiedad 'default', o null
+                    // si no tiene.
+                    $value = $field->getProperty('default', null);
+                }
             }
-            $value = $this->{$field->getName()};
 
             // Fallamos si value es un objeto,y no está cargado
             if (($value instanceof Entity) && $value?->isLoaded() === false) {
-                //throw new InvalidArgumentException("Entity in field '{$field->getName()}' needs to be loaded before saving this entity");
                 continue;
             }
 

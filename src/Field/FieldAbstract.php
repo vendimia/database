@@ -101,6 +101,15 @@ abstract class FieldAbstract implements FieldInterface
     }
 
     /**
+     * Returns whether this field has a property setted
+     */
+    public function hasProperty(string $property): bool
+    {
+        return key_exists($property, $this->properties);
+    }
+
+
+    /**
      * Returns a property, returns $default if property doesn't exists.
      */
     public function getProperty($property, $default = null)
@@ -146,12 +155,8 @@ abstract class FieldAbstract implements FieldInterface
             }
         }
 
-        if (is_null($value) && key_exists('default', $this->properties)) {
-            $value = $this->properties['default'];
-        }
-
         if (!$this->properties['null'] && is_null($value)) {
-            throw new InvalidArgumentException("Value for field '{$this->name}' cannot be null");
+            throw new InvalidArgumentException("Value for {$this->entity_class}::{$this->name} cannot be null");
         }
 
         return $value;
