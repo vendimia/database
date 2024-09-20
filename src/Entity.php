@@ -235,11 +235,6 @@ abstract class Entity implements Stringable
             ReflectionProperty::IS_PUBLIC
         );
 
-        // Si no hay una llave primaria definida, creamos una llamada 'id'
-        if (!isset(static::$primary_key)) {
-            $fields[self::IMPLICIT_PRIMARY_KEY_FIELD] = static::primaryKey();
-        }
-
         foreach ($ref_properties as $rp) {
             $attr = $rp->getAttributes(
                 Field\FieldAbstract::class,
@@ -367,15 +362,16 @@ abstract class Entity implements Stringable
 
         foreach ($data as $key => $value) {
             if (!key_exists($key, $fields)) {
+                // Si el campo es la llave primaria implícita, usamos otro método
+                if ($key == self::IMPLICIT_PRIMARY_KEY_FIELD) {
+                    $this->pk($value);
+                    continue;
+                }
+
                 // FIXME: Ignoramos los campos que no existen?
                 continue;
             }
 
-            // Si el campo es la llave primaria implícita, usamos otro método
-            if ($key == self::IMPLICIT_PRIMARY_KEY_FIELD) {
-                $this->pk($fields[$key]->processDatabaseValue($value));
-                continue;
-            }
 
             $this->{$fields[$key]->getName()}
                 = $fields[$key]->processDatabaseValue($value);
@@ -479,7 +475,7 @@ abstract class Entity implements Stringable
                 $post_proc_fields[$property_name] = $field;
             }
 
-            $value = null;;
+            $value = null;
 
             // El Field para el PK implícito no existe como propiedad en este
             // objeto, asi que lo ignoremos
