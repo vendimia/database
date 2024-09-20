@@ -49,8 +49,8 @@ class ManyToOne extends FieldAbstract
      */
     public function postProc(): void
     {
-        // Si el valor es null, no hacemos nada
-        if (is_null($value = $this->entity->{$this->name})) {
+        // Si el valor es null o no ha sido inicializada, no hacemos nada
+        if (is_null($value = $this->entity->{$this->name} ?? null)) {
             return;
         }
 
