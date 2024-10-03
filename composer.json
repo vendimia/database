@@ -5,7 +5,11 @@
     "keywords": ["php", "vendimia", "orm"],
     "require": {
         "php": ">=8.1",
-        "vendimia/data-container": "*"
+        "vendimia/data-container": "*",
+        "vendimia/helper": "^0.1.0"
+    },
+    "suggest": {
+        "vendimia/logger": "Allows to record the migration process"
     },
     "autoload": {
         "psr-4": {
