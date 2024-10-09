@@ -149,6 +149,22 @@ class Query
     }
 
     /**
+     * Returns the first Entity in a query ordered by its PK
+     */
+    public function first(): Entity
+    {
+        return $this->order($this->target_class::primaryKey()->getFieldName())->limit(1)->get();
+    }
+
+    /**
+     * Returns the last Entity in a query descent-ordered by its PK
+     */
+    public function last(): Entity
+    {
+        return $this->order('-' . $this->target_class::primaryKey()->getFieldName())->limit(1)->get();
+    }
+
+    /**
      * Returns COUNT(*) from the query
      */
     public function count(): int
