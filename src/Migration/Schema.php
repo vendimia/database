@@ -123,7 +123,7 @@ class Schema
      */
     public function addUniqueIndex(...$field_names)
     {
-        return $this->index(...$field_names);
+        return $this->uniqueIndex(...$field_names);
     }
 
 
