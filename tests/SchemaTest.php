@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 
 use Vendimia\Database\Migration\Schema;
@@ -72,12 +75,12 @@ final class SchemaTest extends TestCase
 
         $expected = match (Setup::$connector->getName()) {
             'sqlite' => [
-                'CREATE INDEX "idx_code" ON "test_table" ("code")',
-                'CREATE UNIQUE INDEX "idx_age" ON "test_table" ("age")'
+                'CREATE INDEX "idx_test_table_code" ON "test_table" ("code")',
+                'CREATE UNIQUE INDEX "idx_test_table_age" ON "test_table" ("age")'
             ],
             'mysql' => [
-                'CREATE INDEX `idx_code` ON `test_table` (`code`)',
-                'CREATE UNIQUE INDEX `idx_age` ON `test_table` (`age`)'
+                'CREATE INDEX `idx_test_table_code` ON `test_table` (`code`)',
+                'CREATE UNIQUE INDEX `idx_test_table_age` ON `test_table` (`age`)'
             ],
         };
 
