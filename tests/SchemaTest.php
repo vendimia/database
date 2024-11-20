@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Vendimia\Database\Migration\Schema;
 use Vendimia\Database\Setup;
 use Vendimia\Database\FieldType;
+use Vendimia\Database\ConstrainAction;
 
 final class SchemaTest extends TestCase
 {
@@ -66,6 +67,51 @@ final class SchemaTest extends TestCase
             $schema->getFieldsForCreate(),
         );
     }
+
+    public function testCreateSchemaWithForeignKeyCascade()
+    {
+        $schema = new Schema('test_table');
+        $schema->field('id', FieldType::Integer);
+        $schema->field('othertest_id', FieldType::ForeignKey, target: ['othertest', 'id']);
+        $schema->primaryKey('id');
+
+        $expected = match (Setup::$connector->getName()) {
+            'sqlite' => [
+                'FOREIGN KEY ("othertest_id") REFERENCES "othertest" ("id") ON UPDATE CASCADE ON DELETE CASCADE',
+            ],
+            'mysql' => [
+                'FOREIGN KEY (`othertest_id`) REFERENCES `othertest` (`id`) ON UPDATE CASCADE ON DELETE CASCADE',
+            ],
+        };
+
+        $this->assertEquals(
+            $expected,
+            $schema->getForeignKeyDefs(),
+        );
+    }
+
+    public function testCreateSchemaWithForeignKeySetNull()
+    {
+        $schema = new Schema('test_table');
+        $schema->field('id', FieldType::Integer);
+        $schema->field('othertest_id', FieldType::ForeignKey, target: ['othertest', 'id'], on_delete: ConstrainAction::NULL);
+        $schema->primaryKey('id');
+
+        $expected = match (Setup::$connector->getName()) {
+            'sqlite' => [
+                'FOREIGN KEY ("othertest_id") REFERENCES "othertest" ("id") ON UPDATE CASCADE ON DELETE SET NULL',
+            ],
+            'mysql' => [
+                'FOREIGN KEY (`othertest_id`) REFERENCES `othertest` (`id`) ON UPDATE CASCADE ON DELETE SET NULL',
+            ],
+        };
+
+        $this->assertEquals(
+            $expected,
+            $schema->getForeignKeyDefs(),
+        );
+    }
+
 
     public function testCreateSchemaWithIndexes()
     {

@@ -1,31 +1,38 @@
 <?php
+
 namespace Vendimia\Database\Migration;
 
-use Vendimia\Database\Setup;
-use Vendimia\Database\FieldType;
-use Vendimia\Database\Migration\FieldDef;
+use Vendimia\Database\{
+    Setup,
+    FieldType,
+    ConstrainAction,
+    Migration\FieldDef
+};
 
 /**
  * Table schema modifier
  */
 class Schema
 {
-    // Fields to be added (or created)
+    /** Fields to be added (or created) */
     private $add_fields = [];
 
-    // Fields to be changed. Original field is the key
+    /** Fields to be changed. Original field is the key */
     private $change_fields = [];
 
-    // Fields to be eliminated.
+    /** Fields to be eliminated. */
     private $drop_fields = [];
 
-    // Indexes to be created
+    /** Indexes to be created */
     private $create_indexes = [];
 
-    // Indexes to be dropped
+    /** Indexes to be dropped */
     private $drop_indexes = [];
 
     private $primary_keys = [];
+
+    /** */
+    private $foreign_keys = [];
 
     public function __construct(
         private string $table_name
@@ -47,7 +54,18 @@ class Schema
         mixed $default = null,
         ?bool $after = null,
         ?string $rename_from = null,
-        $action = 'add',
+
+        /** Array prefix where to save this field definition. Possible values: 'add', 'change' */
+        string $action = 'add',
+
+        /** For ForeignKey $type, [table name, column name, [column name[, ...]] */
+        ?array $target = null,
+
+        /** For ForeignKey, ON UPDATE constrain action */
+        ?ConstrainAction $on_update = ConstrainAction::CASCADE,
+
+        /** For ForeignKey, ON DELETE constrain action */
+        ?ConstrainAction $on_delete = ConstrainAction::CASCADE,
     )
     {
         $fielddef = new FieldDef(
@@ -69,6 +87,18 @@ class Schema
 
         // Convertimos FieldType en el nombre del tipo de la base de datos
         $this->{$array_name}[$name] = Setup::$connector->buildFieldDef($fielddef);
+
+        // Si hay un target, este campo debe requerir un constrain
+        if ($target) {
+            $this->foreign_keys[] = Setup::$connector->buildForeignKeyDef(
+                table_name: $this->table_name,
+                field_name: $name,
+                foreign_table_name: $target[0],
+                foreign_field_names: array_slice($target, 1),
+                on_update: $on_update,
+                on_delete: $on_delete,
+            );
+        }
     }
 
     /**
@@ -188,6 +218,12 @@ class Schema
                 join(',', Setup::$connector->escapeIdentifier($this->primary_keys))
             . ')';
         }
+
+        // Añadimos los FOREIGN KEYS
+        foreach ($this->foreign_keys as $statment) {
+            $return[] = $statment;
+        }
+
         return join(',', $return);
     }
 
@@ -229,5 +265,10 @@ class Schema
     public function getDropIndexes()
     {
         return $this->drop_indexes;
+    }
+
+    public function getForeignKeyDefs(): array
+    {
+        return $this->foreign_keys;
     }
 }

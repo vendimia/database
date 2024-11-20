@@ -2,11 +2,13 @@
 
 namespace Vendimia\Database\Driver;
 
+use Vendimia\Database\ConstrainAction;
 use Vendimia\Database\FieldType;
 use Vendimia\Database\Entity;
 use Vendimia\Database\DatabaseReadyValue;
 use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\Migration\FieldDef;
+
 use InvalidArgumentException;
 use Stringable;
 use Generator;
@@ -312,6 +314,28 @@ abstract class ConnectorAbstract
 
         return join(' ', $def);
     }
+
+    public function buildForeignKeyDef(
+        string $table_name,
+        string $field_name,
+        string $foreign_table_name,
+        array $foreign_field_names,
+        ConstrainAction $on_update,
+        ConstrainAction $on_delete,
+    ): string
+    {
+        $def = [
+            'FOREIGN KEY',
+            '(' . $this->escapeIdentifier($field_name) . ')',
+            'REFERENCES',
+            $this->escapeIdentifier($foreign_table_name),
+            '(' . join(',', $this->escapeIdentifier($foreign_field_names)) . ')',
+            'ON UPDATE', $on_update->value,
+            'ON DELETE', $on_delete->value,
+        ];
+        return join(' ', $def);
+    }
+
     /**
      * Since SQLite doesn't support 'ALTER TABLE CHANGE', the SQL creation has
      * been moved here.
