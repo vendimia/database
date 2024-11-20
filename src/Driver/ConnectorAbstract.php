@@ -272,7 +272,12 @@ abstract class ConnectorAbstract
             $def[] = 'NOT NULL';
         }
         if (!is_null($fielddef->default)) {
-            $def[] = 'DEFAULT ' . $this->escape($fielddef->default);
+            // Si $default es un array, debe ser para un campo JSON.
+            $default = $this->escape($fielddef->default);
+            if (is_array($fielddef->default)) {
+                $default = json_encode($fielddef->default);
+            }
+            $def[] = 'DEFAULT ' . $default;
         }
 
         return join(' ', $def);
