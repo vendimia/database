@@ -29,6 +29,72 @@ abstract class ConnectorAbstract
     }
 
     /**
+     * Prepares an SQL query expanding variables
+     *
+     * A variable is defined by a string inside brackets. Its value must be in the
+     * $args variadic.
+     *
+     * A variable name can be sufixed with this modifiers, separed by a colon
+     *
+     * * `i`: The variable is an identifier, it should be escaped differently
+     * * `s`: The variable has the same value as the name.
+     */
+    public function prepare(string $query, ...$args): string
+    {
+        $regexp = '/\{(.+?)\}/';
+
+        $count = preg_match_all($regexp, $query, $matches, PREG_SET_ORDER);
+
+        if (!$count) {
+            // No hay matches. O hubo un error. Retornamos el query intacto
+            return $query;
+        }
+
+        $replace = [];
+
+        foreach ($matches as $match) {
+            $variable = $match[1];
+
+            // Método para escapar el valor, camiado por el modificador 'i'
+            $escape_method = $this->escape(...);
+
+            $self_value = false;
+
+            $colon_pos = strpos($variable, ':');
+            if ($colon_pos !== false) {
+                $modifiers = substr($variable, $colon_pos + 1);
+                $variable = substr($variable, 0, $colon_pos);
+
+                for ($i = 0; $i < strlen($modifiers); $i++) {
+                    switch($modifiers[$i]) {
+                        case 'i':
+                            // Identificador
+                            $escape_method = $this->escapeIdentifier(...);
+                            break;
+                        case 's':
+                            // Valor es el mismo nombre, escapado.
+                            $self_value = true;
+                            break;
+                    }
+                }
+            }
+
+            if ($self_value) {
+                $value = $escape_method($variable);
+            } else {
+                if (!key_exists($variable, $args)) {
+                    throw new InvalidArgumentException("Missing argument for variable '{$variable}'");
+                }
+                $value = $escape_method($args[$variable]);
+            }
+
+            $replace[$match[0]] = $value;
+        }
+
+        return strtr($query, $replace);
+    }
+
+    /**
      * Converts and escapes a value from a number of types to a database-ready
      * value
      */
