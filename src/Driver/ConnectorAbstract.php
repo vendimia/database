@@ -9,6 +9,7 @@ use Vendimia\Database\Field\FieldInterface;
 use Vendimia\Database\Migration\FieldDef;
 use InvalidArgumentException;
 use Stringable;
+use Generator;
 
 /**
  * Common methods for ConnectorInterface implementation
@@ -311,4 +312,23 @@ abstract class ConnectorAbstract
 
         return join(' ', $def);
     }
+    /**
+     * Since SQLite doesn't support 'ALTER TABLE CHANGE', the SQL creation has
+     * been moved here.
+     */
+    public function buildChangeFieldStatement(
+        string $table_name,
+        string $field_name,
+        string $fielddef
+    ): Generator
+    {
+        yield join(' ', [
+            'ALTER TABLE',
+            $this->escapeIdentifier($table_name),
+            "CHANGE",
+            $this->escapeIdentifier($field_name),
+            $fielddef,
+        ]);
+    }
+
 }

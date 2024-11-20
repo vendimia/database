@@ -34,15 +34,15 @@ class Update implements ActionInterface
                 $field_name = $fielddef->rename_from;
             }
 
-            $alter_table = join(' ', [
-                'ALTER TABLE',
-                $connection->escapeIdentifier($schema->getTableName()),
-                "CHANGE",
-                $connection->escapeIdentifier($field_name),
-                $fielddef,
-            ]);
-
-            $connection->execute($alter_table);
+            // Some drivers (like SQLite) executes several queries
+            $statements = $connection->buildChangeFieldStatement(
+                table_name: $schema->getTableName(),
+                field_name: $field_name,
+                fielddef: $fielddef,
+            );
+            foreach ($statements as $statement) {
+                $connection->execute($statement);
+            }
         }
 
         // Ahora los campos que borramos

@@ -16,6 +16,7 @@ use Exception;
 use RuntimeException;
 use SQLite3;
 use Stringable;
+use Generator;
 
 class Connector extends ConnectorAbstract implements ConnectorInterface
 {
@@ -231,4 +232,66 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         return join(' ', $def);
     }
 
+    /**
+     * SQLite doesn't support 'ALTER TABLE CHANGE', so this will emulate one.
+     *
+     * Changes are made in 4 steps:
+     *
+     * - First, creates a new temporal field with $fielddef.
+     * - Second, copies all the values from the old file to this temp field.
+     * - Thirth, drops the old column.
+     * - And last, renames the temporal field to the old name
+     */
+    public function buildChangeFieldStatement(
+        string $table_name,
+        string $field_name,
+        string $fielddef
+    ): generator
+    {
+        // Nombre temporal que tendrá la nueva columna
+        $tmp_field_name = $this->escapeIdentifier('__t_' . $field_name);
+
+        // El fielddef empieza con el nombre del nuevo campo. Lo removemos
+        // para crearlo usando el temporal
+        $tmp_fielddef = substr($fielddef, strpos($fielddef, " ") + 1);
+
+        // Escapamos todo
+        $table_name = $this->escapeIdentifier($table_name);
+        $field_name = $this->escapeIdentifier($field_name);
+
+        // Primero, creamos una columna temporal
+        yield join(' ', [
+            'ALTER TABLE',
+            $table_name,
+            "ADD",
+            $tmp_field_name,
+            $fielddef,
+        ]);
+
+        // Luego, copiamos el valor de la columna
+        yield join(' ', [
+            'UPDATE',
+            $table_name,
+            'SET',
+            $tmp_field_name . '=' . $field_name,
+        ]);
+
+        // Borramos la columna original
+        yield join(' ', [
+            'ALTER TABLE',
+            $table_name,
+            'DROP COLUMN',
+            $field_name,
+        ]);
+
+        // Y renombramos la columna temporal
+        yield join(' ', [
+            'ALTER TABLE',
+            $table_name,
+            "RENAME COLUMN",
+            $tmp_field_name,
+            'TO',
+            $field_name,
+        ]);
+    }
 }
