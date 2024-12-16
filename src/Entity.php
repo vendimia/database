@@ -318,6 +318,11 @@ abstract class Entity implements Stringable
     {
         $this->database_data = $data;
 
+        // Esta entidad no es nueva, pues la info proviene del registro de la
+        // base de datos
+
+        $this->is_new = false;
+
         // Precargamos la llave primaria
         if (isset(static::$primary_key)) {
             if (key_exists(static::$primary_key, $data)) {
