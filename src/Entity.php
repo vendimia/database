@@ -518,6 +518,13 @@ abstract class Entity implements Stringable
 
         $update_ok = false;
         if ($pk_value) {
+            // Es posible que el PK sea el implícito 'id', y tenga un valor
+            // asignado manualmente por el usuario. En ese caso quizas quiera
+            // guardar un nuevo registro con un PK definido. Este UPDATE
+            // fallará, pero ya estará el valor en el payload para el INSERT
+            // que continua.
+            $payload[$pk_field] = $pk_value;
+
             // Probamos actualizar.
             $update_ok = Setup::$connector->update(
                 static::getTableName(),
