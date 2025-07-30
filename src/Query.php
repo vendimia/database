@@ -151,7 +151,7 @@ class Query
     /**
      * Returns the first Entity in a query ordered by its PK
      */
-    public function first(): Entity
+    public function first(): ?Entity
     {
         return $this->order($this->target_class::primaryKey()->getFieldName())->limit(1)->get();
     }
@@ -159,7 +159,7 @@ class Query
     /**
      * Returns the last Entity in a query descent-ordered by its PK
      */
-    public function last(): Entity
+    public function last(): ?Entity
     {
         return $this->order('-' . $this->target_class::primaryKey()->getFieldName())->limit(1)->get();
     }
