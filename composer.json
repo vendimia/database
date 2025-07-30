@@ -6,7 +6,7 @@
     "require": {
         "php": ">=8.1",
         "vendimia/data-container": "*",
-        "vendimia/helper": "^0.1.0"
+        "vendimia/helper": "*"
     },
     "suggest": {
         "vendimia/logger": "Allows to record the migration process"
