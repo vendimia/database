@@ -9,6 +9,12 @@ abstract class FieldAbstract implements FieldInterface
     protected ?Entity $entity = null;
     protected $value;
 
+    /**
+     * Firsts positional unnamed arguments. Used for some controls as syntax
+     * sugar, like Char, used for its 'lenght' parameter.
+     */
+    protected array $positional_arguments = [];
+
     protected $properties = [
         // Required length for some values.
         'length' => null,
@@ -51,22 +57,10 @@ abstract class FieldAbstract implements FieldInterface
             );
         }
 
-        // Índices 0 y 1 tienen significado especial
-
-        if (isset($args[0])) {
-            // El índice 0 puede tener la longitud del campo, o la clase destino
-            // de ciertas relaciones foráneas
-            $property = array_shift($args);
-            if (is_numeric($property)) {
-                $this->properties['length'] = intval($property);
-            } else {
-                $this->properties['entity'] = $property;
-            }
-        }
-
-        // Si sigue insistiendo un índice 0, son los decimales
-        if (isset($args[0])) {
-            $this->properties['decimal'] = intval(array_shift($args));
+        // Guardamos los primeros valores posicionales, por si el Field los
+        // usa como syntax sugar
+        while (isset($args[0])) {
+            $this->positional_arguments[] = array_shift($args);
         }
 
         $this->properties = array_merge(

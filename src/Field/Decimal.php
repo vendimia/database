@@ -21,6 +21,14 @@ class Decimal extends FieldAbstract
     {
         parent::__construct(...$args);
 
+        // Si hay dos argumentos posicionales, los usamos
+        if (isset($this->positional_arguments[0])) {
+            $this->properties['length'] = $this->positional_arguments[0];
+        }
+        if (isset($this->positional_arguments[1])) {
+            $this->properties['decimal'] = $this->positional_arguments[1];
+        }
+
         if (!$this->properties['length']) {
             throw new DomainException("Field '{$this->name}' of type 'Decimal' requires a length (precision)");
         }

@@ -19,6 +19,11 @@ class FixChar extends FieldAbstract
     {
         parent::__construct(...$args);
 
+        // Si hay un argumento posicional, lo usamos
+        if (isset($this->positional_arguments[0])) {
+            $this->properties['length'] = $this->positional_arguments[0];
+        }
+
         if (!$this->properties['length']) {
             throw new InvalidArgumentException("Field '{$this->name}' of type 'FixChar' requires a length");
         }

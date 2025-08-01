@@ -28,6 +28,11 @@ class ManyToOne extends FieldAbstract
     {
         parent::__construct(...$args);
 
+        // Si hay un argumento posicional, lo usamos
+        if (isset($this->positional_arguments[0])) {
+            $this->properties['entity'] = $this->positional_arguments[0];
+        }
+
         if (!$this->properties['entity']) {
             throw new InvalidArgumentException(
                 "{$this->entity_class}: Field '{$this->name}' of type 'ManyToOne' requires a target Entity");

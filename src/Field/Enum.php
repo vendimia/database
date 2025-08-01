@@ -17,6 +17,11 @@ class Enum extends FieldAbstract
     {
         parent::__construct(...$args);
 
+        // Si hay un argumento posicional, lo usamos
+        if (isset($this->positional_arguments[0])) {
+            $this->properties['valid_values'] = $this->positional_arguments[0];
+        }
+
         if (!$this->properties['valid_values']) {
             throw new InvalidArgumentException("Field '{$this->name}' of type 'Enum' requires a 'valid_values' list");
         }

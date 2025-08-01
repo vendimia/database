@@ -25,9 +25,11 @@ class OneToMany extends FieldAbstract
     {
         parent::__construct(...$args);
 
-        // La clase objetivo es el 1er parámetro, que está en 'length'.
-        // Cambiamos el nombre del campo
-        $this->properties['entity'] ??= $this->properties['length'] ?? null;
+        // Si hay un argumento posicional, lo usamos
+        if (isset($this->positional_arguments[0])) {
+            $this->properties['entity'] = $this->positional_arguments[0];
+        }
+
         if (!$this->properties['entity']) {
             throw new InvalidArgumentException("Field '{$this->name}' of type 'OneToMany' requires a target Entity");
         }
