@@ -38,7 +38,7 @@ class OneToMany extends FieldAbstract
         $this->properties['local_key'] ??= ($this->entity_class)::getPrimaryKeyField()->getName();
     }
 
-    public function getFieldType(): ?FieldType
+    public static function getFieldType(): ?FieldType
     {
         return null;
     }

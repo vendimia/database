@@ -9,7 +9,7 @@ interface FieldInterface
     /**
      * Returns the field type, used for SQL field definition.
      */
-    public function getFieldType(): ?FieldType;
+    public static function getFieldType(): ?FieldType;
 
     /**
      * Returns this database field name. Null disables this Field to have one

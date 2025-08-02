@@ -19,7 +19,7 @@ class ManyToOne extends FieldAbstract
         'foreign_key' => 'id',
     ];
 
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::Integer;
     }

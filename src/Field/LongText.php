@@ -9,7 +9,7 @@ use Vendimia\Database\FieldType;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class LongText extends Text
 {
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::LongText;
     }

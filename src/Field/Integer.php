@@ -8,7 +8,7 @@ use Vendimia\Database\FieldType;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Integer extends FieldAbstract
 {
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::Integer;
     }

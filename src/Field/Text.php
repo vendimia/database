@@ -10,7 +10,7 @@ use InvalidArgumentException;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Text extends FieldAbstract
 {
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::Text;
     }

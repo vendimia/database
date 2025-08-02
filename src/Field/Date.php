@@ -8,7 +8,7 @@ use Vendimia\Database\FieldType;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Date extends FieldAbstract
 {
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::Date;
     }

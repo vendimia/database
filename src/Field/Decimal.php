@@ -12,7 +12,7 @@ use DomainException;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Decimal extends FieldAbstract
 {
-    public function getFieldType(): FieldType
+    public static function getFieldType(): FieldType
     {
         return FieldType::Decimal;
     }
