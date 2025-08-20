@@ -29,20 +29,27 @@ class Enum extends FieldAbstract
 
         // Sólo permitirmos arrays o BackedEnums
         if (!is_array($this->properties['valid_values'])
-            && !$this->properties['valid_values'] instanceof BackedEnum) {
+            && !enum_exists($this->properties['valid_values'])) {
 
-            throw new InvalidArgumentException("valid_values must be an array or a Backed Enum, not " . gettype($this->properties['valid_values']));
-
+            throw new InvalidArgumentException("valid_values must be an array or Enum, not " . gettype($this->properties['valid_values']));
         }
     }
 
     /**
-     * if valid_values has an backed Enum, returns the Enum element
+     * if valid_values has an Enum, returns the Enum element
      */
     public function processDatabaseValue($value)
     {
-        if ($this->properties['valid_values'] instanceof BackedEnum) {
-            return $this->properties['valid_values']::from($value);
+        // Si valid_values no es un array, es un enum.
+        if (!is_array($this->properties['valid_values'])) {
+
+            // Si es baked enum, usamos ::from()
+            if (is_subclass_of($this->properties['valid_values'], BackedEnum::class)) {
+                return $this->properties['valid_values']::from($value);
+            }
+
+            // Si no es baked, simplemente devolvemos el 'case' con el mismo nombre
+            return $this->properties['valid_values']::{$value};
         }
 
         return parent::processDatabaseValue($value);
