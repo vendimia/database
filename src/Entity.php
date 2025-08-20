@@ -40,6 +40,9 @@ abstract class Entity implements Stringable
 
     /**
      * Builds the default table name from the entity class name.
+     *
+     * Vendimia uses the convention '[module]\Database\[database-class]', so
+     * this method removes the 'database' part
      */
     protected static function buildTableName()
     {
@@ -247,11 +250,26 @@ abstract class Entity implements Stringable
 
             $class = $attr->getName();
 
-            $fields[$rp->name] = new $class(
+            $arguments = $attr->getArguments();
+
+            // Procesamos algunos argumentos antes de registrarlos.
+
+            // - Si la propiedad acepta null, entonces 'null' => true,
+            if ($rp->getType()?->allowsNull()) {
+                $arguments['null'] = true;
+            }
+
+            // - Si existe el argumento 'unique', entonces cambiamos 'index' a
+            //   'unique'
+            if ($arguments['unique'] ?? false) {
+                $arguments['index'] = 'unique';
+            }
+
+            $field_object = $fields[$rp->name] = new $class(
                 name: $rp->name,
                 comment: static::extractTextFromDocComment($rp->getDocComment()),
                 entity_class: static::class,
-                args: $attr->getArguments(),
+                args: $arguments,
             );
         }
 
