@@ -112,6 +112,14 @@ abstract class FieldAbstract implements FieldInterface
     }
 
     /**
+     * Returns an array of properties
+     */
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    /**
      * Sets this field entity owner
      */
     public function setEntity(Entity $entity): self
