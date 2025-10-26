@@ -7,6 +7,17 @@ use Vendimia\Database\FieldType;
 
 interface ConnectorInterface
 {
+
+    /**
+     * Performs the connection to the database.
+     */
+    public function connect(): void;
+
+    /**
+     * Forces a disconnection from the database. Must set self::$db to null.
+     */
+    public function disconnect(): void;
+
     /**
      * Returns the driver's name.
      */

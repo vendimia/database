@@ -22,8 +22,28 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 {
     public function __construct(...$args)
     {
-        $this->db = new SQLite3(...$args);
+        $this->database_args = $args;
+        $this->connect();
+    }
+
+    public function connect(): void
+    {
+        // Si ya existe una conexión a la db, la desconectamos
+        if ($this->db) {
+            $this->disconnect();
+        }
+
+        $this->db = new SQLite3(...$this->database_args);
         $this->db->enableExceptions(true);
+    }
+
+    public function disconnect(): void
+    {
+        if ($this->db) {
+            $this->db->close();
+        }
+        $this->db = null;
+
     }
 
     public function getName(): string

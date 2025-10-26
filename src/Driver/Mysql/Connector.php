@@ -21,9 +21,21 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
 {
     public function __construct(...$args)
     {
+        $this->database_args = $args;
+        $this->connect();
+    }
+
+    public function connect(): void
+    {
+        // Si ya existe una conexión a la db, la desconectamos
+        if ($this->db) {
+            $this->disconnect();
+        }
+
         $this->db = new MySQLi;
 
         // Necesitamos MYSQLI_CLIENT_FOUND_ROWS
+        $args = $this->database_args;
         $args['flags'] ??= 0;
         $args['flags'] |= MYSQLI_CLIENT_FOUND_ROWS;
 
@@ -32,6 +44,14 @@ class Connector extends ConnectorAbstract implements ConnectorInterface
         if ($result === false) {
             throw new RuntimeException($this->link->error);
         }
+    }
+
+    public function disconnect(): void
+    {
+        if ($this->db) {
+            $this->db->close();
+        }
+        $this->db = null;
     }
 
     public function getName(): string

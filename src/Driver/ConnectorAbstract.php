@@ -18,7 +18,11 @@ use Generator;
  */
 abstract class ConnectorAbstract
 {
-    protected $db;
+    /** Arguments for connecting to the db server/service */
+    protected array $database_args = [];
+
+    /** Database connection */
+    protected $db = null;
 
     /** Last SQL command executed */
     protected $last_sql;
