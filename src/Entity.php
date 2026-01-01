@@ -373,7 +373,15 @@ abstract class Entity implements Stringable
         // Reordenamos los campos usando el nombre del campo _en la base de
         // datos_ como índice.
         foreach ($this->getFieldList() as $name => $field) {
-            $fields[$field->getFieldName()] = $field;
+            $field_name = $field->getFieldName();
+
+            // Solo añadimos el campo a $fields si tiene un campo en la base
+            // de datos
+            if ($field_name) {
+                $fields[$field_name] = $field;
+            }
+
+            // Le añadimos esta entidad al campo
             $field->setEntity($this);
 
             // Si este field requiere post-proceso, lo guardamos en otro listado
