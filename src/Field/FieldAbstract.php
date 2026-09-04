@@ -37,6 +37,9 @@ abstract class FieldAbstract implements FieldInterface
         // Database field for this entity. Default is this entity name.
         'database_field' => null,
 
+        /** Converts any falsey value to null */
+        'false_as_null' => false,
+
         /** Methods in this entity for processing values from and to the database, in the form of [from_method, to_method] */
         'value_processing_methods' => null,
     ];
@@ -159,6 +162,10 @@ abstract class FieldAbstract implements FieldInterface
 
         if (!$this->properties['null'] && is_null($value)) {
             throw new InvalidArgumentException("Value for {$this->entity_class}::{$this->name} cannot be null");
+        }
+
+        if ($this->properties['false_as_null'] && !$value) {
+            $value = null;
         }
 
         return $value;
