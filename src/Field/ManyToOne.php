@@ -21,7 +21,7 @@ class ManyToOne extends FieldAbstract
 
     public static function getFieldType(): FieldType
     {
-        return FieldType::Integer;
+        return FieldType::ForeignKey;
     }
 
     public function __construct(...$args)
