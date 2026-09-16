@@ -23,7 +23,7 @@ class Json extends FieldAbstract
         $value = parent::processPHPValue($value);
 
         if (!is_array($value) && !is_null($value)) {
-            throw new InvalidArgumentException("Value for field '{$this->name}' must be an array");
+            throw new InvalidArgumentException("Value for field '{$this->name}' must be an array or null (if allowed), got " . get_debug_type($value) . ' instead');
         }
 
         return json_encode($value);
