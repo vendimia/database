@@ -160,13 +160,14 @@ abstract class FieldAbstract implements FieldInterface
             }
         }
 
+        if ($this->properties['false_as_null'] && !$value) {
+            $value = null;
+        }
+
         if (!$this->properties['null'] && is_null($value)) {
             throw new InvalidArgumentException("Value for {$this->entity_class}::{$this->name} cannot be null");
         }
 
-        if ($this->properties['false_as_null'] && !$value) {
-            $value = null;
-        }
 
         return $value;
     }
