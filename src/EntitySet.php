@@ -200,6 +200,16 @@ class EntitySet implements Iterator
     }
 
     /**
+     * Calls a callback over every entity of this set
+     */
+    public function forEach(callable $callback): void
+    {
+        foreach ($this as $record) {
+            $callback($record);
+        }
+    }
+
+    /**
      * Returns a copy of the query
      */
     public function getQuery(): Query
